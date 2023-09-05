@@ -1,4 +1,4 @@
-# appcedid
+# cedid
 
 A new Flutter project.
 
