@@ -56,6 +56,7 @@ packages:
       sha256: d57953e10f9f8327ce64a508a355f0b1ec902193f66288e8cb5070e7c47eeb2d
       url: "https://pub.dev"
     source: hosted
+<<<<<<< HEAD
 <<<<<<< Updated upstream
     version: "1.0.5"
   english_words:
@@ -69,6 +70,9 @@ packages:
 =======
     version: "1.0.6"
 >>>>>>> Stashed changes
+=======
+    version: "1.0.6"
+>>>>>>> E.-Contreras
   fake_async:
     dependency: transitive
     description:

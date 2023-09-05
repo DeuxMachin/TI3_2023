@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:appcedid/agendar_page.dart';
 
 import 'chat_screen.dart';
+=======
+import 'package:ti3/screens/home.dart';
+>>>>>>> E.-Contreras
 
 void main() {
   runApp(MyApp());
@@ -13,6 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+<<<<<<< HEAD
 <<<<<<< Updated upstream
       title: 'Agedar',
 =======
@@ -119,6 +124,13 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
 >>>>>>> Stashed changes
+=======
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white,
+      ),
+      home: HomeScreen(),
+>>>>>>> E.-Contreras
     );
   }
 }
