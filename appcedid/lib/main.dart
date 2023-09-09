@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+<<<<<<< refs/remotes/origin/dev
 <<<<<<< HEAD
 import 'package:appcedid/agendar_page.dart';
 
@@ -7,6 +8,10 @@ import 'chat_screen.dart';
 import 'package:ti3/screens/home.dart';
 >>>>>>> E.-Contreras
 
+=======
+import 'package:appcedid/agendar_page.dart';
+
+>>>>>>> d
 void main() {
   runApp(MyApp());
 }
@@ -17,6 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+<<<<<<< refs/remotes/origin/dev
 <<<<<<< HEAD
 <<<<<<< Updated upstream
       title: 'Agedar',
@@ -24,15 +30,22 @@ class MyApp extends StatelessWidget {
       title: 'CEDID Demo',
       debugShowCheckedModeBanner: false,
 >>>>>>> Stashed changes
+=======
+      title: 'Agedar',
+>>>>>>> d
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
       ),
+<<<<<<< refs/remotes/origin/dev
 <<<<<<< Updated upstream
+=======
+>>>>>>> d
       home: AgendarPage(),
       routes: {
         '/calendario': (context) => PagCalendario(),
       },
+<<<<<<< refs/remotes/origin/dev
 =======
       home: const ChatScreen(),
     );
@@ -131,6 +144,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       home: HomeScreen(),
 >>>>>>> E.-Contreras
+=======
+>>>>>>> d
     );
   }
 }
