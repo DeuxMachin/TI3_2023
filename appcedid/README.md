@@ -1,4 +1,8 @@
+<<<<<<< refs/remotes/origin/dev
 # ti3
+=======
+# appcedid
+>>>>>>> Revert "Home"
 
 A new Flutter project.
 

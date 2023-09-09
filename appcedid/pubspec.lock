@@ -68,6 +68,7 @@ packages:
     source: hosted
 >>>>>>> d
     version: "1.0.5"
+<<<<<<< HEAD
   english_words:
     dependency: "direct main"
     description:
@@ -77,6 +78,7 @@ packages:
     source: hosted
     version: "4.0.0"
 <<<<<<< refs/remotes/origin/dev
+<<<<<<< refs/remotes/origin/dev
 =======
     version: "1.0.6"
 >>>>>>> Stashed changes
@@ -85,6 +87,10 @@ packages:
 >>>>>>> E.-Contreras
 =======
 >>>>>>> d
+=======
+=======
+>>>>>>> parent of ab89309... Home
+>>>>>>> Revert "Home"
   fake_async:
     dependency: transitive
     description:

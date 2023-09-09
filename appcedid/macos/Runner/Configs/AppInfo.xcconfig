@@ -5,10 +5,17 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
+<<<<<<< refs/remotes/origin/dev
 PRODUCT_NAME = ti3
 
 // The application's bundle identifier
 PRODUCT_BUNDLE_IDENTIFIER = com.example.ti3
+=======
+PRODUCT_NAME = appcedid
+
+// The application's bundle identifier
+PRODUCT_BUNDLE_IDENTIFIER = com.example.appcedid
+>>>>>>> Revert "Home"
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2023 com.example. All rights reserved.

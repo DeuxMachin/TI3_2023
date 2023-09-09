@@ -23,7 +23,11 @@ if (flutterVersionName == null) {
 }
 
 android {
+<<<<<<< refs/remotes/origin/dev
     namespace "com.example.ti3"
+=======
+    namespace "com.example.appcedid"
+>>>>>>> Revert "Home"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -42,7 +46,11 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+<<<<<<< refs/remotes/origin/dev
         applicationId "com.example.ti3"
+=======
+        applicationId "com.example.appcedid"
+>>>>>>> Revert "Home"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion flutter.minSdkVersion

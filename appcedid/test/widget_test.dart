@@ -8,7 +8,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+<<<<<<< refs/remotes/origin/dev
 import 'package:ti3/main.dart';
+=======
+import 'package:appcedid/main.dart';
+>>>>>>> Revert "Home"
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {

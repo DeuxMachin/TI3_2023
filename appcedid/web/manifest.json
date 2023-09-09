@@ -1,6 +1,11 @@
 {
+<<<<<<< refs/remotes/origin/dev
     "name": "ti3",
     "short_name": "ti3",
+=======
+    "name": "appcedid",
+    "short_name": "appcedid",
+>>>>>>> Revert "Home"
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

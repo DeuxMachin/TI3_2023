@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
+<<<<<<< refs/remotes/origin/dev
         android:label="ti3"
+=======
+        android:label="appcedid"
+>>>>>>> Revert "Home"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
