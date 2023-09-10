@@ -1,4 +1,4 @@
-package com.example.appcedid
+package com.example.ti3
 
 import io.flutter.embedding.android.FlutterActivity
 
