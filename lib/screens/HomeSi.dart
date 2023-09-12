@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ti3/main.dart';
 import 'package:ti3/screens/juaker.dart';
 import 'package:ti3/screens/nacho.dart';
 import 'package:ti3/screens/diego.dart';
+import 'package:ti3/screens/perfil.dart';
 
 class HomePage extends StatelessWidget {
   List catNames = [
@@ -29,7 +29,7 @@ class HomePage extends StatelessWidget {
     const Icon(Icons.play_circle_fill, color: Colors.white, size: 30),
     const Icon(Icons.event, color: Colors.white, size: 30),
   ];
-  final pages = [AgendarPage(), LoginScreen(), ChatScreen()];
+  final pages = [AgendarPage(), LoginScreen(), ChatPage(), PerfilPage()];
   List imgList = [
     'react',
     'icono',

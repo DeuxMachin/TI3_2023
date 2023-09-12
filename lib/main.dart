@@ -3,6 +3,7 @@ import 'package:ti3/screens/home.dart';
 import 'package:ti3/screens/juaker.dart';
 import 'package:ti3/screens/nacho.dart';
 import 'package:ti3/screens/diego.dart';
+import 'package:ti3/screens/perfil.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +25,8 @@ class MyApp extends StatelessWidget {
         '/Agendar': (context) => AgendarPage(),
         '/calendario': (context) => PagCalendario(),
         '/login': (context) => LoginScreen(),
-        '/foro': (context) => ChatScreen(),
+        '/ChatBot': (context) => ChatPage(),
+        'Perfil': (context) => PerfilPage(),
       },
     );
   }

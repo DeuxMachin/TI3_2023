@@ -1,32 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:chat_bubbles/chat_bubbles.dart';
 
 class ChatMessage extends StatelessWidget {
-  const ChatMessage({super.key, required this.text, required this.sender});
+  final String message;
+  final bool isSender;
 
-  final String text;
-  final String sender;
+  ChatMessage(this.message, this.isSender);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          margin: const EdgeInsets.only(right: 16.0),
-          child: CircleAvatar(child: Text(sender[0])),
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(sender, style: Theme.of(context).textTheme.titleMedium),
-              Container(
-                margin: const EdgeInsets.only(top: 5.0),
-                child: Text(text),
-              ),
-            ],
-          ),
-        ),
-      ],
+    return Container(
+      padding: EdgeInsets.all(5),
+      child: BubbleSpecialThree(
+        text: message,
+        color: isSender ? Color(0xFF1B97F3) : Color(0xFFE8E8EE),
+        tail: true,
+        textStyle: isSender
+            ? TextStyle(color: Colors.white, fontSize: 16)
+            : TextStyle(color: Colors.black, fontSize: 16),
+        isSender: this.isSender,
+      ),
     );
   }
 }
