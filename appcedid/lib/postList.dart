@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'post.dart';
 
 class PostList extends StatefulWidget {
-  final  List <Post> listItems;
+  final List<Post> listItems;
   PostList(this.listItems);
 
   @override
@@ -10,34 +10,66 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListState extends State<PostList> {
-  void like(Function callBack){
+  void like(Function callBack) {
     this.setState(() {
       callBack();
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount:this.widget.listItems.length ,
+      itemCount: this.widget.listItems.length,
       itemBuilder: (context, index) {
         var post = this.widget.listItems[index];
-        return Card(child: Row(children: <Widget>[Expanded(child: ListTile(title: Text(post.body), 
-          subtitle: Text(post.author),
-        )),
-        Row(
-          children: <Widget>[
-            Container(child: Text(post.likes.toString(),
-              style: TextStyle(fontSize: 20)),
-              padding: EdgeInsets.fromLTRB(0, 0, 10, 0),),
-            IconButton(icon: Icon(Icons.thumb_up),
-            onPressed: () => like(post.likePost),
-            color: post.userLiked ? Colors.green: Colors.black
-          )
-        ],
-        )
-        ]));
+        return Container(
+          padding: EdgeInsets.all(4),
+          margin: EdgeInsets.all(4),
+          child: Card(
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage:
+                          post.userImg != null ? NetworkImage(post.userImg) : null,
+                    ),
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(post.body),
+                        Text(post.author),
+                      ],
+                    ),
+                  ),
+                ),
+                Row(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                      child: Text(
+                        post.likes.toString(),
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.thumb_up),
+                      onPressed: () => like(post.likePost),
+                      color: post.userLiked ? Colors.green : Colors.black,
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.arrow_right),
+                      onPressed: () {
+                        // Add your comment button logic here
+                      },
+                      color: Colors.black,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
       },
     );
   }
