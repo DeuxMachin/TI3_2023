@@ -15,7 +15,7 @@ class _NewPostFormState extends State<NewPostForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nueva publicacion foro'),
+        title: Text('Nueva publicacion foro'), backgroundColor: Color.fromARGB(255, 235, 250, 151),
       ),
       body: Padding(
         padding: EdgeInsets.all(4),

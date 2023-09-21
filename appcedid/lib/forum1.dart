@@ -59,7 +59,7 @@ class _forum1State extends State<forum1> {
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      appBar: AppBar(title: Text('Foro de consultas')), 
+      appBar: AppBar(title: Text('Foro de consultas'),backgroundColor: Color.fromARGB(255, 235, 250, 151),), 
       body: Column(children:<Widget>[
         Expanded(child: PostList(this.posts))
       ]),
