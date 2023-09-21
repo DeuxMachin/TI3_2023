@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'post.dart';
+import 'forum2.dart';
 
 class PostList extends StatefulWidget {
   final List<Post> listItems;
@@ -26,21 +27,27 @@ class _PostListState extends State<PostList> {
           padding: EdgeInsets.all(4),
           margin: EdgeInsets.all(4),
           child: Card(
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Expanded(
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage:
-                          post.userImg != null ? NetworkImage(post.userImg) : null,
-                    ),
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(post.body),
-                        Text(post.author),
-                      ],
-                    ),
+                ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(post.userImg),
+                  ),
+                  title: Text(post.title),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(post.subtitle),
+                      Text(post.author,style: TextStyle(color: Colors.blue[200],fontSize: 12),),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(post.body),
                   ),
                 ),
                 Row(
@@ -53,14 +60,17 @@ class _PostListState extends State<PostList> {
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.thumb_up),
+                      icon: Icon(Icons.favorite),
                       onPressed: () => like(post.likePost),
                       color: post.userLiked ? Colors.green : Colors.black,
                     ),
                     IconButton(
-                      icon: Icon(Icons.arrow_right),
+                      icon: Icon(Icons.arrow_circle_right_outlined),
                       onPressed: () {
-                        // Add your comment button logic here
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => forum2()),
+                        );
                       },
                       color: Colors.black,
                     ),

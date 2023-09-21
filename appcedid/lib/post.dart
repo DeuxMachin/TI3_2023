@@ -1,6 +1,8 @@
 
 
 class Post{
+  String title;
+  String subtitle;
   String body;
   String author;
   String userImg;
@@ -8,8 +10,7 @@ class Post{
   int likes= 0;
   bool userLiked = false;
 
-  Post (this.body, this.author, this.userImg, this.time);
-
+  Post (this.title, this.subtitle, this.body, this.author, this.userImg, this.time);
 
   void likePost (){
     this.userLiked = !this.userLiked;

@@ -3,7 +3,7 @@ import 'post.dart';
 import 'package:intl/intl.dart';
 
 class PostList extends StatefulWidget {
-  final  List <Post> listItems;
+  final List<Post> listItems;
   PostList(this.listItems);
 
   @override
@@ -11,7 +11,7 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListState extends State<PostList> {
-  void like(Function callBack){
+  void like(Function callBack) {
     this.setState(() {
       callBack();
     });
@@ -20,11 +20,11 @@ class _PostListState extends State<PostList> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount:this.widget.listItems.length ,
+      itemCount: this.widget.listItems.length,
       itemBuilder: (context, index) {
         var post = this.widget.listItems[index];
         return Container(
-          padding: EdgeInsets.all(4), 
+          padding: EdgeInsets.all(4),
           margin: EdgeInsets.all(4),
           child: Card(
             child: Column(
@@ -33,19 +33,31 @@ class _PostListState extends State<PostList> {
                   leading: CircleAvatar(
                     // ignore: unnecessary_null_comparison
                     backgroundImage: post.userImg != null ? NetworkImage(post.userImg) : null,
-                    radius: 30, // Aumenta el tamaño de la imagen
+                    radius: 30,
                   ),
-                    title: Column(
+                  title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(post.author),
+                      Text(
+                        post.author,
+                        style: TextStyle(color: Colors.blue[200], fontSize: 20),
+                      ),
+                      Text(post.subtitle),
                       TextButton(
                         onPressed: () {
                           // Aquí puedes poner el código para redirigir a otra página
                         },
                         child: Container(
                           padding: EdgeInsets.all(10),
-                          child: Text('perfil'),
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            border: Border.all(color: Colors.yellow, width: 2),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            'perfil',
+                            style: TextStyle(color: Colors.blue),
+                          ),
                         ),
                       ),
                     ],
@@ -53,11 +65,22 @@ class _PostListState extends State<PostList> {
                 ),
                 Padding(
                   padding: EdgeInsets.all(10),
-                  child: Text(post.body),
+                  child: Text(
+                    post.title,
+                    style: TextStyle(fontSize: 20),
+                  ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Text(DateFormat('hh:mm a').format(post.time)+'~'+'${post.time.day}/${post.time.month}/${post.time.year}'),
+                Text(post.body),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      DateFormat('hh:mm a').format(post.time) +
+                          '~' +
+                          '${post.time.day}/${post.time.month}/${post.time.year}',
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -66,7 +89,4 @@ class _PostListState extends State<PostList> {
       },
     );
   }
-
-
-
 }
