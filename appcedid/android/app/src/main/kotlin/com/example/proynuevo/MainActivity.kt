@@ -1,4 +1,4 @@
-package com.example.appcedid
+package com.example.proynuevo
 
 import io.flutter.embedding.android.FlutterActivity
 
