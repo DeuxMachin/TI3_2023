@@ -5,8 +5,10 @@ class PerfilPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Perfil del Docente'),
-        backgroundColor: Colors.teal,
+        title:
+            Text('Perfil del Docente', style: TextStyle(color: Colors.black)),
+        backgroundColor: Color.fromARGB(255, 235, 250, 151),
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: SafeArea(
         child: Column(

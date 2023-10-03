@@ -87,4 +87,3 @@ app.*.map.json
 
 # Archivos generados por Flutter
 .pubspec.lock
-appcedid/

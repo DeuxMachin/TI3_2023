@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ti3/screens/HomeSi.dart';
+import 'package:ti3/screens/login.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   child: Center(
                     child: Image.asset(
-                      "assets/dis.png",
+                      "assets/Inicio.png",
                       scale: 0.8,
                     ),
                   ),
@@ -61,7 +61,7 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      "LISTO PARA APRENDER",
+                      "Bienvenido a DTE UCT",
                       style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.w600,
@@ -73,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 40),
                       child: Text(
-                        "TEXTOOOOOOOOOOOO",
+                        "Facilitando la comunicación y el acceso a servicios institucionales en la Universidad Católica de Temuco",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 17,
@@ -81,7 +81,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 60),
+                    SizedBox(height: 30),
                     Material(
                       color: Colors.deepPurple,
                       borderRadius: BorderRadius.all(Radius.circular(6.0)),
@@ -90,14 +90,14 @@ class HomeScreen extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => HomePage(),
+                                builder: (context) => LoginScreen(),
                               ));
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(
-                              vertical: 15, horizontal: 80),
+                              vertical: 15, horizontal: 60),
                           child: Text(
-                            "Botón",
+                            "Ir al inicio",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,

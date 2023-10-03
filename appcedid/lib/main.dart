@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:ti3/screens/home.dart';
-import 'package:ti3/screens/juaker.dart';
-import 'package:ti3/screens/nacho.dart';
-import 'package:ti3/screens/diego.dart';
+import 'package:ti3/screens/agendar.dart';
+import 'package:ti3/screens/login.dart';
+import 'package:ti3/screens/chatbot.dart';
 import 'package:ti3/screens/perfil.dart';
+import 'package:ti3/screens/foro.dart';
+import 'package:ti3/screens/cursos.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -26,7 +31,9 @@ class MyApp extends StatelessWidget {
         '/calendario': (context) => PagCalendario(),
         '/login': (context) => LoginScreen(),
         '/ChatBot': (context) => ChatPage(),
-        'Perfil': (context) => PerfilPage(),
+        '/Perfil': (context) => PerfilPage(),
+        '/Foro': (context) => ForoPage(),
+        '/Cursos' :(context) => Cursospage(),
       },
     );
   }
