@@ -1,30 +1,40 @@
 import 'package:flutter/material.dart';
-import 'forum1.dart';
+import 'package:ti3/screens/home.dart';
+import 'package:ti3/screens/agendar.dart';
+import 'package:ti3/screens/login.dart';
+import 'package:ti3/screens/chatbot.dart';
+import 'package:ti3/screens/perfil.dart';
+import 'package:ti3/screens/foro.dart';
+import 'package:ti3/screens/cursos.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Foro',
       theme: ThemeData(
-        primarySwatch: Colors.amber,      
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+        scaffoldBackgroundColor: Colors.white,
       ),
-      home: forum1(),
+      home: HomeScreen(),
+      routes: {
+        '/Agendar': (context) => AgendarPage(),
+        '/calendario': (context) => PagCalendario(),
+        '/login': (context) => LoginScreen(),
+        '/ChatBot': (context) => ChatPage(),
+        '/Perfil': (context) => PerfilPage(),
+        '/Foro': (context) => ForoPage(),
+        '/Cursos': (context) => Cursospage(),
+      },
     );
   }
 }
-
-
-
-
-
-

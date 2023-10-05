@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "cedid" "\0"
+            VALUE "FileDescription", "ti3" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "cedid" "\0"
+            VALUE "InternalName", "ti3" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "cedid.exe" "\0"
-            VALUE "ProductName", "cedid" "\0"
+            VALUE "OriginalFilename", "ti3.exe" "\0"
+            VALUE "ProductName", "ti3" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
