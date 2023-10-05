@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:ti3/screens/juaker.dart';
+import 'package:ti3/screens/Cursos/DocenciaLinea.dart';
+import 'package:ti3/screens/agendar.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:ti3/screens/diego.dart';
+import 'package:ti3/screens/chatbot.dart';
 import 'package:ti3/screens/perfil.dart';
+import 'package:ti3/screens/foro.dart';
+import 'package:ti3/screens/Cursos/cursos.dart';
+import 'package:ti3/screens/Cursos/ModeloEduca.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -50,14 +54,19 @@ List<Widget> catIcon = [
   ),
 ];
 
-final cursos = []; // Para rutas de los cursos a trabajar.
+final cursos = [
+  Cursospage(),
+  ModeloEduca(),
+  DocenciaLinea()
+]; // Para rutas de los cursos a trabajar.
 
 final pages = [
   //Para las rutas del navbar.
   HomePage(),
   AgendarPage(),
   ChatPage(),
-  PerfilPage()
+  PerfilPage(),
+  ForoPage()
 ];
 
 List<String> catUrls = [
@@ -243,7 +252,7 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => pages[index]));
+                                builder: (context) => cursos[index]));
                       },
                       child: Container(
                         padding:
@@ -290,22 +299,26 @@ class _HomePageState extends State<HomePage> {
         unselectedItemColor: Colors.grey,
         currentIndex: currentIndex, // Establece el índice actual
         onTap: (index) {
-          // Cambia de página al tocar un ícono en el BottomNavigationBar
-          setState(() {
-            currentIndex = index;
-          });
+          // Verifica si el índice está dentro del rango válido
+          if (index >= 0 && index < pages.length) {
+            // Cambia de página al tocar un ícono en el BottomNavigationBar
+            setState(() {
+              currentIndex = index;
+            });
 
-          // Navega a la página correspondiente utilizando Navigator
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => pages[currentIndex]),
-          );
+            // Navega a la página correspondiente utilizando Navigator
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => pages[currentIndex]),
+            );
+          }
         },
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Agendar'),
           BottomNavigationBarItem(icon: Icon(Icons.flutter_dash), label: 'Bot'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Cuenta'),
+          BottomNavigationBarItem(icon: Icon(Icons.forum), label: 'Foro'),
         ],
       ),
     );

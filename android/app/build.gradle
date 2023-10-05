@@ -49,6 +49,11 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true
+        // KEY PARA PODER CONECTARSE A FIREBASE
+        manifestPlaceholders += [
+         'appAuthRedirectScheme': '296261999476-9bdv3f7c0if810n8dlla77061aive76f.apps.googleusercontent.com'
+       ]
     }
 
     buildTypes {
@@ -64,4 +69,8 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    implementation  'com.android.support:multidex:2.0.1'
+}
+apply plugin: 'com.google.gms.google-services'
+

@@ -1,6 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class PerfilPage extends StatelessWidget {
+class PerfilPage extends StatefulWidget {
+  @override
+  _PerfilPageState createState() => _PerfilPageState();
+}
+
+class _PerfilPageState extends State<PerfilPage> {
+  CollectionReference _collectionRef =
+      FirebaseFirestore.instance.collection('Usuarios');
+  List usuarioData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getData().then((_) {
+      setState(() {});
+    });
+  }
+
+  Future<void> getData() async {
+    // Get docs from collection reference
+    QuerySnapshot querySnapshot = await _collectionRef.get();
+
+    // Get data from docs and convert map to List
+    usuarioData = querySnapshot.docs.map((doc) => doc.data()).toList();
+
+    print(usuarioData);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +62,7 @@ class PerfilPage extends StatelessWidget {
                   color: Colors.teal,
                 ),
                 title: Text(
-                  'Nombre Y Apellido',
+                  usuarioData[0]['Nombre'],
                   style: TextStyle(
                     fontSize: 20.0,
                     color: Colors.teal.shade900,
@@ -50,7 +78,7 @@ class PerfilPage extends StatelessWidget {
                   color: Colors.teal,
                 ),
                 title: Text(
-                  '07-06-1988',
+                  'ALOG',
                   style: TextStyle(
                     fontSize: 20.0,
                     color: Colors.teal.shade900,
@@ -66,7 +94,7 @@ class PerfilPage extends StatelessWidget {
                   color: Colors.teal,
                 ),
                 title: Text(
-                  '+56900001111',
+                  'celular',
                   style: TextStyle(
                     fontSize: 20.0,
                     color: Colors.teal.shade900,
@@ -82,7 +110,7 @@ class PerfilPage extends StatelessWidget {
                   color: Colors.teal,
                 ),
                 title: Text(
-                  'docente@uct.cl',
+                  usuarioData[0]['email'],
                   style: TextStyle(
                     fontSize: 20.0,
                     color: Colors.teal.shade900,
@@ -98,7 +126,7 @@ class PerfilPage extends StatelessWidget {
                   color: Colors.teal,
                 ),
                 title: Text(
-                  'FideosConSalsa44232',
+                  usuarioData[0]['Clave'],
                   style: TextStyle(
                     fontSize: 20.0,
                     color: Colors.teal.shade900,
