@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ti3/screens/agendar.dart';
+import 'package:ti3/screens/login.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ti3/screens/chatbot.dart';
 import 'package:ti3/screens/perfil.dart';
 import 'package:ti3/screens/foro.dart';
 import 'package:ti3/screens/cursos.dart';
+import 'package:ti3/utils/authentication.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -108,7 +110,7 @@ class _HomePageState extends State<HomePage> {
             ),
             child: Column(
               children: [
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Icon(
@@ -116,11 +118,21 @@ class _HomePageState extends State<HomePage> {
                       size: 30,
                       color: Colors.white,
                     ),
-                    Icon(
-                      Icons.account_circle,
-                      size: 30,
-                      color: Colors.white,
-                    )
+                    IconButton(
+                      icon: Icon(
+                        Icons.account_circle,
+                        size: 30,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        Authentication.logout();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()),
+                        );
+                      },
+                    ),
                   ],
                 ),
                 const SizedBox(height: 20),

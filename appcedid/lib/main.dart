@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         '/ChatBot': (context) => ChatPage(),
         '/Perfil': (context) => PerfilPage(),
         '/Foro': (context) => ForoPage(),
-        '/Cursos' :(context) => Cursospage(),
+        '/Cursos': (context) => Cursospage(),
       },
     );
   }

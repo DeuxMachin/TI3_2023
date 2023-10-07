@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ti3/screens/HomeSi.dart';
+import 'package:ti3/utils/authentication.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -111,12 +113,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 20),
                 InkWell(
-                  onTap: () {
-                    // Navega a la página Home cuando se hace clic en el botón
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
+                  onTap: () async {
+                    User? user =
+                        await Authentication.signInWithGoogle(context: context);
+                    if (user != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomePage()),
+                      );
+                    }
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),
