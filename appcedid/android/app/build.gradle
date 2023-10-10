@@ -51,7 +51,7 @@ android {
         versionName flutterVersionName
         multiDexEnabled true
         manifestPlaceholders += [
-         'appAuthRedirectScheme': '296261999476-9gjef838lr9gk7no37cqv2nhgvfdm6c1.apps.googleusercontent.com'
+         'appAuthRedirectScheme': '296261999476-ielfeal2pjcs555ru2vqvuesv0v03m5j.apps.googleusercontent.com'
        ]
     }
 
