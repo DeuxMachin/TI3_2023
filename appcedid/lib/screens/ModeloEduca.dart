@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class ModeloEduca extends StatelessWidget {
   final List<Map<String, String?>> imageInfo = [
-    {"imagePath": "assets/IconPDF.png", "title": "Modelo Educativo UC Temuco"},
-    {
-      "imagePath": "assets/IconPDF.png",
-      "title": "Competencias genéricas"
-    },
-    {
-      "imagePath": "assets/IconPDF.png",
-      "title": "Perfil Docente UC Temuco"
-    },
+    {"imagePath": "assets/IconPDF.png", "title": "Modelo Educativo UC Temuco", "url": "https://dte.uct.cl/wp-content/uploads/2018/08/ModeloEducativoUCT-1.pdf"},
+    {"imagePath": "assets/IconPDF.png","title": "Competencias genéricas", "url": "https://dte.uct.cl/wp-content/uploads/2018/08/competencias_genericas-2.pdf"},
+    {"imagePath": "assets/IconPDF.png","title": "Perfil Docente UC Temuco","url":"https://dte.uct.cl/wp-content/uploads/2018/06/Perfil-Docente-UC-TEMUCO.pdf"},
     // Agrega las rutas de tus imágenes y títulos aquí
   ];
+  
+  void launchURL(String url) async =>
+  await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
+
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +27,12 @@ class ModeloEduca extends StatelessWidget {
         child: Center(
           child: Column(
             children: <Widget>[
-              Image.asset("assets/ModeloEduca.png"),
+              Image.asset("assets/Modelo Educativo Institucional.png"),
+
               _crearCurso1(),
+              Text('Cursos relacionados con el Modelo Educacional',   
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+
               _crearListaDeImagenes(),
             ],
           ),
@@ -70,34 +74,40 @@ class ModeloEduca extends StatelessWidget {
       itemCount: imageInfo.length,
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
-        return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-              elevation: 5,
-              child: Container(
-                padding: EdgeInsets.all(8.0),
-                child: Column(
-                  children: <Widget>[
-                    Image.asset(
-                      imageInfo[index]["imagePath"] ?? "",
-                      width: 120, // Ajusta el ancho de la imagen
-                      height: 80, // Ajusta la altura de la imagen
-                      fit: BoxFit
-                          .contain, // Ajusta el modo de ajuste de la imagen
+        return GestureDetector(
+        onTap: () {
+          launchURL(imageInfo[index]["url"]?? ""); // Reemplaza "AQUÍ_INSERTA_LA_URL" con la URL correspondiente
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Card(
+            elevation: 10,
+            child: Container(
+              padding: EdgeInsets.all(5.0),
+              child: Column(
+                children: <Widget>[
+                  Image.asset(
+                    imageInfo[index]["imagePath"] ?? "",
+                    width: 120,
+                    height: 70,
+                    fit: BoxFit.contain,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    imageInfo[index]["title"] ?? "",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
-                    SizedBox(height: 10),
-                    Text(
-                      imageInfo[index]["title"] ?? "",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ));
-      },
-    );
-  }
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
 }

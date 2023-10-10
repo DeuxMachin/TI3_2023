@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EducaBlack extends StatelessWidget {
   final List<Map<String, String?>> imageInfo = [
-    {"imagePath": "assets/CPC.jpg", "title": "Crea tu propio banner de curso"},
+    {"imagePath": "assets/CPC.jpg", "title": "Crea tu propio banner de curso", "url": "https://dte.uct.cl/recursos-graficos/banner-de-curso-blackboard/"},
     {
       "imagePath": "assets/ReCoCu.jpg",
-      "title": "Recursos para el contenido de tu curso"
-    },
-    {
-      "imagePath": "assets/CePrCu.jpg",
-      "title": "Crea tu propio banner de curso"
+      "title": "Recursos para el contenido de tu curso", "url": "https://dte.uct.cl/recursos-graficos/plantillas-ppt/"
     },
     // Agrega las rutas de tus imágenes y títulos aquí
   ];
+
+  void launchURL(String url) async =>
+  await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +27,10 @@ class EducaBlack extends StatelessWidget {
         child: Center(
           child: Column(
             children: <Widget>[
-              Image.asset("assets/EducaBlack.png"),
+              Image.asset("assets/Introduccion a Educa Blackboard.png"),
               _crearCurso1(),
+              Text('Cursos relacionados a EducaBlackboard',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               _crearListaDeImagenes(),
             ],
           ),
@@ -69,34 +71,40 @@ class EducaBlack extends StatelessWidget {
       itemCount: imageInfo.length,
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
-        return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-              elevation: 5,
-              child: Container(
-                padding: EdgeInsets.all(8.0),
-                child: Column(
-                  children: <Widget>[
-                    Image.asset(
-                      imageInfo[index]["imagePath"] ?? "",
-                      width: 120, // Ajusta el ancho de la imagen
-                      height: 70, // Ajusta la altura de la imagen
-                      fit: BoxFit
-                          .contain, // Ajusta el modo de ajuste de la imagen
+      return GestureDetector(
+        onTap: () {
+          launchURL(imageInfo[index]["url"]?? ""); // Reemplaza "AQUÍ_INSERTA_LA_URL" con la URL correspondiente
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Card(
+            elevation: 10,
+            child: Container(
+              padding: EdgeInsets.all(5.0),
+              child: Column(
+                children: <Widget>[
+                  Image.asset(
+                    imageInfo[index]["imagePath"] ?? "",
+                    width: 120,
+                    height: 70,
+                    fit: BoxFit.contain,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    imageInfo[index]["title"] ?? "",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
-                    SizedBox(height: 10),
-                    Text(
-                      imageInfo[index]["title"] ?? "",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ));
-      },
-    );
-  }
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
 }

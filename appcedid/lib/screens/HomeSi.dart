@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ti3/screens/DocenciaLinea.dart';
+import 'package:ti3/screens/EducaBlack.dart';
+import 'package:ti3/screens/HyFlex.dart';
+import 'package:ti3/screens/ImpulsaRed.dart';
 import 'package:ti3/screens/agendar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ti3/screens/chatbot.dart';
@@ -54,7 +57,7 @@ List<Widget> catIcon = [
   ),
 ];
 
-final cursos = [Cursospage(),ModeloEduca(), DocenciaLinea()]; // Para rutas de los cursos a trabajar.
+final cursos = [Cursospage(),ModeloEduca(), DocenciaLinea(),EducaBlack(), ImpulsaRed(), HyFlex()]; // Para rutas de los cursos a trabajar.
 
 final pages = [
   //Para las rutas del navbar.
@@ -86,12 +89,12 @@ void launchURL(int index) async {
 class _HomePageState extends State<HomePage> {
   int currentIndex = 0;
   List imgList = [
-    'react',
-    'icono',
-    'fea',
-    'cloud',
-    'padlet',
-    'pear',
+    'Virtualiza',
+    'Modelo Educativo Institucional',
+    'DocenciaOnline',
+    'Introduccion a Educa Blackboard',
+    'Impulsa Tu Red',
+    'Hyflex',
   ];
   @override
   Widget build(BuildContext context) {
@@ -264,8 +267,8 @@ class _HomePageState extends State<HomePage> {
                               padding: EdgeInsets.all(10),
                               child: Image.asset(
                                 "assets/${imgList[index]}.png",
-                                width: 100,
-                                height: 100,
+                                width: 150,
+                                height: 80,
                               ),
                             ),
                             SizedBox(height: 10),
