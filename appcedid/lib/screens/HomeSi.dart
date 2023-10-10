@@ -1,35 +1,90 @@
 import 'package:flutter/material.dart';
-import 'package:ti3/main.dart';
-import 'package:ti3/screens/juaker.dart';
-import 'package:ti3/screens/nacho.dart';
-import 'package:ti3/screens/diego.dart';
+import 'package:ti3/screens/agendar.dart';
+import 'package:ti3/screens/login.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:ti3/screens/chatbot.dart';
+import 'package:ti3/screens/perfil.dart';
+import 'package:ti3/screens/foro.dart';
+import 'package:ti3/screens/cursos.dart';
+import 'package:ti3/utils/authentication.dart';
 
-class HomePage extends StatelessWidget {
-  List catNames = [
-    "Categories",
-    'Classes',
-    'Courses',
-    'Books',
-    'Livestreams',
-    'leaderboard',
-  ];
-  List<Color> catColors = [
-    const Color(0xFFFFCF2F),
-    const Color(0xFF6FE08D),
-    const Color(0xFF61BDFD),
-    const Color(0xFFFC7F7F),
-    const Color(0XFFCB84FB),
-    const Color(0XFF78E667),
-  ];
-  List<Icon> catIcon = [
-    const Icon(Icons.category, color: Colors.white, size: 30),
-    const Icon(Icons.video_library, color: Colors.white, size: 30),
-    const Icon(Icons.assignment, color: Colors.white, size: 30),
-    const Icon(Icons.store, color: Colors.white, size: 30),
-    const Icon(Icons.play_circle_fill, color: Colors.white, size: 30),
-    const Icon(Icons.event, color: Colors.white, size: 30),
-  ];
-  final pages = [AgendarPage(), LoginScreen(), ChatPage()];
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+List catNames = [
+  "Blackboard",
+  'Portal',
+  'Directorio',
+  'UCT',
+  'Calendario',
+  'DTE UCT',
+];
+List<Color> catColors = [
+  const Color(0xFFFFCF2F),
+  const Color(0xFF6FE08D),
+  const Color(0xFF61BDFD),
+  const Color(0xFFFC7F7F),
+  const Color(0XFFCB84FB),
+  const Color(0XFF78E667),
+];
+List<Widget> catIcon = [
+  Image.asset(
+    'assets/blackboard.png', // Ruta de la imagen en la carpeta de assets
+    width: 30, // Ancho de la imagen
+    height: 30, // Alto de la imagen
+  ),
+  const Icon(Icons.video_library, color: Colors.white, size: 30),
+  Image.asset(
+    'assets/directorio.png', // Ruta de la imagen en la carpeta de assets
+    width: 50, // Ancho de la imagen
+    height: 50, // Alto de la imagen
+  ),
+  Image.asset(
+    'assets/Logo_UCT.png', // Ruta de la imagen en la carpeta de assets
+    width: 30, // Ancho de la imagen
+    height: 30, // Alto de la imagen
+  ),
+  const Icon(Icons.calendar_month, color: Colors.white, size: 30),
+  Image.asset(
+    'assets/Logo_UCT.png', // Ruta de la imagen en la carpeta de assets
+    width: 30, // Ancho de la imagen
+    height: 30, // Alto de la imagen
+  ),
+];
+
+final cursos = [Cursospage()]; // Para rutas de los cursos a trabajar.
+
+final pages = [
+  //Para las rutas del navbar.
+  HomePage(),
+  AgendarPage(),
+  ChatPage(),
+  PerfilPage(),
+  ForoPage()
+];
+
+List<String> catUrls = [
+  // Links para los URLs
+  'https://educa.blackboard.com',
+  'https://estudiantes.uct.cl',
+  'https://directorio.uct.cl',
+  'https://www.uct.cl',
+  'https://www.uct.cl/calendario-academico/',
+  'https://dte.uct.cl',
+];
+void launchURL(int index) async {
+  Uri url = Uri.parse(catUrls[index]);
+  try {
+    await launchUrl(url);
+  } catch (e) {
+    throw 'No se pudo lanzar $url';
+  }
+}
+
+class _HomePageState extends State<HomePage> {
+  int currentIndex = 0;
   List imgList = [
     'react',
     'icono',
@@ -55,7 +110,7 @@ class HomePage extends StatelessWidget {
             ),
             child: Column(
               children: [
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Icon(
@@ -63,11 +118,21 @@ class HomePage extends StatelessWidget {
                       size: 30,
                       color: Colors.white,
                     ),
-                    Icon(
-                      Icons.account_circle,
-                      size: 30,
-                      color: Colors.white,
-                    )
+                    IconButton(
+                      icon: Icon(
+                        Icons.account_circle,
+                        size: 30,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        Authentication.logout();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()),
+                        );
+                      },
+                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -125,15 +190,20 @@ class HomePage extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return Column(
                       children: [
-                        Container(
-                          height: 60,
-                          width: 60,
-                          decoration: BoxDecoration(
-                            color: catColors[index],
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                            child: catIcon[index],
+                        GestureDetector(
+                          onTap: () {
+                            launchURL(index); // Pasa el índice aquí
+                          },
+                          child: Container(
+                            height: 60,
+                            width: 60,
+                            decoration: BoxDecoration(
+                              color: catColors[index],
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: catIcon[index],
+                            ),
                           ),
                         ),
                         SizedBox(height: 10),
@@ -188,7 +258,7 @@ class HomePage extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => pages[index]));
+                                builder: (context) => cursos[index]));
                       },
                       child: Container(
                         padding:
@@ -233,12 +303,28 @@ class HomePage extends StatelessWidget {
         selectedItemColor: Colors.purple,
         selectedFontSize: 18,
         unselectedItemColor: Colors.grey,
+        currentIndex: currentIndex, // Establece el índice actual
+        onTap: (index) {
+          // Verifica si el índice está dentro del rango válido
+          if (index >= 0 && index < pages.length) {
+            // Cambia de página al tocar un ícono en el BottomNavigationBar
+            setState(() {
+              currentIndex = index;
+            });
+
+            // Navega a la página correspondiente utilizando Navigator
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => pages[currentIndex]),
+            );
+          }
+        },
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.assignment), label: 'cursos'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Algo'),
+          BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Agendar'),
+          BottomNavigationBarItem(icon: Icon(Icons.flutter_dash), label: 'Bot'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Cuenta'),
+          BottomNavigationBarItem(icon: Icon(Icons.forum), label: 'Foro'),
         ],
       ),
     );
