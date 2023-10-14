@@ -39,102 +39,120 @@ class _PerfilPageState extends State<PerfilPage> {
         iconTheme: IconThemeData(color: Colors.black),
       ),
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            CircleAvatar(
-              radius: 110.0,
-              backgroundImage: AssetImage('assets/user.png'),
-            ),
-            Text(
-              'Nombre del Docente',
-              style: TextStyle(
-                fontSize: 40.0,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.person,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  usuarioData[0]['Nombre'],
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.teal.shade900,
+        child: FutureBuilder(
+          future: getData(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text("Error: ${snapshot.error}"));
+            } else if (usuarioData.isEmpty) {
+              return Center(child: Text("No hay datos disponibles"));
+            } else {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  CircleAvatar(
+                    radius: 110.0,
+                    backgroundImage: AssetImage('assets/user1.png'),
                   ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.cake,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  'ALOG',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.teal.shade900,
+                  Text(
+                    'Nombre del Docente',
+                    style: TextStyle(
+                      fontSize: 40.0,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.phone,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  'celular',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.teal.shade900,
+                  Card(
+                    margin:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.person,
+                        color: Colors.teal,
+                      ),
+                      title: Text(
+                        usuarioData[0]['Nombre'],
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.teal.shade900,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.email,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  usuarioData[0]['email'],
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.teal.shade900,
+                  Card(
+                    margin:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.cake,
+                        color: Colors.teal,
+                      ),
+                      title: Text(
+                        'ALOG',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.teal.shade900,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.lock,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  usuarioData[0]['Clave'],
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.teal.shade900,
+                  Card(
+                    margin:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.phone,
+                        color: Colors.teal,
+                      ),
+                      title: Text(
+                        'celular',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.teal.shade900,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-          ],
+                  Card(
+                    margin:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.email,
+                        color: Colors.teal,
+                      ),
+                      title: Text(
+                        usuarioData[0]['email'],
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.teal.shade900,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Card(
+                    margin:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.lock,
+                        color: Colors.teal,
+                      ),
+                      title: Text(
+                        usuarioData[0]['Clave'],
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.teal.shade900,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
+          },
         ),
       ),
     );

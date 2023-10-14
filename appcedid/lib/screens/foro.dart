@@ -1,3 +1,5 @@
+// ignore_for_file: override_on_non_overriding_member
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'newPostForm.dart';
@@ -52,6 +54,16 @@ class _PostListState extends State<PostList> {
   }
 
   @override
+  String limitWords(String text, int wordLimit) {
+    List<String> words = text.split(' ');
+
+    if (words.length <= wordLimit) {
+      return text;
+    }
+
+    return words.take(wordLimit).join(' ') + '.....';
+  }
+
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: widget.postStream,
@@ -64,14 +76,12 @@ class _PostListState extends State<PostList> {
           return Text("Loading");
         }
 
-        // Use the null-aware operator to access 'docs'
         final docs = snapshot.data?.docs;
         if (docs == null) {
           return Text("No data");
         }
 
         return ListView.builder(
-          // Use the null-aware operator to get the length of 'docs'
           itemCount: docs.length,
           itemBuilder: (context, index) {
             var postData = docs[index].data() as Map<String, dynamic>;
@@ -111,7 +121,7 @@ class _PostListState extends State<PostList> {
                       padding: EdgeInsets.all(8),
                       child: Align(
                         alignment: Alignment.center,
-                        child: Text(post.body),
+                        child: Text(limitWords(post.body, 20)),
                       ),
                     ),
                     Row(
@@ -126,7 +136,8 @@ class _PostListState extends State<PostList> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => forum2()),
+                              MaterialPageRoute(
+                                  builder: (context) => forum2(post: post)),
                             );
                           },
                           color: Colors.black,

@@ -33,7 +33,6 @@ class _PostListState extends State<PostList> {
               children: <Widget>[
                 ListTile(
                   leading: CircleAvatar(
-                    // ignore: unnecessary_null_comparison
                     backgroundImage: post.userImg != null
                         ? NetworkImage(post.userImg)
                         : null,
@@ -54,7 +53,6 @@ class _PostListState extends State<PostList> {
                             MaterialPageRoute(
                                 builder: (context) => PerfilPage()),
                           );
-                          // Aquí puedes poner el código para redirigir a otra página
                         },
                         child: Container(
                           padding: EdgeInsets.all(10),
@@ -101,7 +99,8 @@ class _PostListState extends State<PostList> {
 }
 
 class forum2 extends StatefulWidget {
-  const forum2({super.key});
+  final Post post;
+  const forum2({required this.post, Key? key}) : super(key: key);
 
   @override
   State<forum2> createState() => _forum2State();
@@ -110,14 +109,10 @@ class forum2 extends StatefulWidget {
 class _forum2State extends State<forum2> {
   List<Post> posts = [];
 
-  _forum2State() {
-    posts.add(Post(
-        "Lorem Ipsum",
-        "Lorem Ipsum",
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sollicitudin imperdiet erat, et scelerisque diam pulvinar dignissim. Pellentesque vitae orci semper, rhoncus mi at, ultrices justo. Cras lacus est, placerat non pretium sit amet, ullamcorper sit amet massa. Aenean vitae pharetra nunc. Nam pulvinar nulla in augue dignissim, pharetra sagittis ex vulputate. Fusce est mi, maximus ut orci bibendum, euismod euismod enim. Aliquam et neque ligula. Ut porta purus a nisl fermentum, a rutrum dolor tempus. Pellentesque eu ligula ligula. Nullam purus orci, placerat ut enim in, convallis dapibus lorem.",
-        "Author",
-        "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-        DateTime.now()));
+  @override
+  void initState() {
+    super.initState();
+    posts.add(widget.post);
   }
 
   @override
