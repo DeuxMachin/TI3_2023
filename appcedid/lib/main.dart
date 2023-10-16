@@ -28,7 +28,11 @@ class MyApp extends StatelessWidget {
       home: HomeScreen(),
       routes: {
         '/Agendar': (context) => AgendarPage(),
-        '/calendario': (context) => PagCalendario(),
+        '/calendario': (context) => PagCalendario(
+              nombre: '',
+              apellidos: '',
+              correo: '',
+            ),
         '/login': (context) => LoginScreen(),
         '/ChatBot': (context) => ChatPage(),
         '/Perfil': (context) => PerfilPage(),
