@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class PerfilPage extends StatefulWidget {
   @override
@@ -7,26 +7,18 @@ class PerfilPage extends StatefulWidget {
 }
 
 class _PerfilPageState extends State<PerfilPage> {
-  CollectionReference _collectionRef =
-      FirebaseFirestore.instance.collection('Usuarios');
-  List usuarioData = [];
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? loggedInUser;
 
   @override
   void initState() {
     super.initState();
-    getData().then((_) {
-      setState(() {});
-    });
+    getCurrentUser();
   }
 
-  Future<void> getData() async {
-    // Get docs from collection reference
-    QuerySnapshot querySnapshot = await _collectionRef.get();
-
-    // Get data from docs and convert map to List
-    usuarioData = querySnapshot.docs.map((doc) => doc.data()).toList();
-
-    print(usuarioData);
+  void getCurrentUser() {
+    loggedInUser = _auth.currentUser;
+    setState(() {});
   }
 
   @override
@@ -44,10 +36,10 @@ class _PerfilPageState extends State<PerfilPage> {
           children: <Widget>[
             CircleAvatar(
               radius: 110.0,
-              backgroundImage: AssetImage('assets/user.png'),
+              backgroundImage: AssetImage('assets/user.jpg'),
             ),
             Text(
-              'Nombre del Docente',
+              loggedInUser?.displayName ?? 'Cargando...',
               style: TextStyle(
                 fontSize: 40.0,
                 color: Colors.white,
@@ -58,75 +50,11 @@ class _PerfilPageState extends State<PerfilPage> {
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
               child: ListTile(
                 leading: Icon(
-                  Icons.person,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  usuarioData[0]['Nombre'],
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.teal.shade900,
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.cake,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  'ALOG',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.teal.shade900,
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.phone,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  'celular',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.teal.shade900,
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
                   Icons.email,
                   color: Colors.teal,
                 ),
                 title: Text(
-                  usuarioData[0]['email'],
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.teal.shade900,
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.lock,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  usuarioData[0]['Clave'],
+                  loggedInUser?.email ?? 'Cargando...',
                   style: TextStyle(
                     fontSize: 20.0,
                     color: Colors.teal.shade900,

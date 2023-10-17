@@ -7,6 +7,9 @@ import 'package:ti3/screens/perfil.dart';
 import 'package:ti3/screens/foro.dart';
 import 'package:ti3/screens/Cursos/cursos.dart';
 import 'package:ti3/screens/Cursos/ModeloEduca.dart';
+import 'package:ti3/screens/Cursos/EducaBlack.dart';
+import 'package:ti3/screens/Cursos/HyFlex.dart';
+import 'package:ti3/screens/Cursos/ImpulsaTuRed.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -57,7 +60,10 @@ List<Widget> catIcon = [
 final cursos = [
   Cursospage(),
   ModeloEduca(),
-  DocenciaLinea()
+  DocenciaLinea(),
+  EducaBlack(),
+  ImpulsaRed(),
+  HyFlex()
 ]; // Para rutas de los cursos a trabajar.
 
 final pages = [
@@ -81,7 +87,7 @@ List<String> catUrls = [
 void launchURL(int index) async {
   Uri url = Uri.parse(catUrls[index]);
   try {
-    await launchUrl(url);
+    await launch(url.toString());
   } catch (e) {
     throw 'No se pudo lanzar $url';
   }
@@ -249,10 +255,13 @@ class _HomePageState extends State<HomePage> {
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () {
-                        Navigator.push(
+                        if (index >= 0 && index < cursos.length) {
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => cursos[index]));
+                                builder: (context) => cursos[index]),
+                          );
+                        }
                       },
                       child: Container(
                         padding:
