@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HyFlex extends StatelessWidget {
+// Creamos una lista para almacenar las imagenes , titulo , url para cada card
   final List<Map<String, String?>> imageInfo = [
     {
       "imagePath": "assets/IconPDF.png",
@@ -9,10 +10,7 @@ class HyFlex extends StatelessWidget {
       "url":
           "https://dte.uct.cl/wp-content/uploads/2021/11/PROTOCOLO-DOCENTES.pdf"
     },
-    {
-      "imagePath": "assets/IconPDF.png",
-      "title": "Guia de aprendizaje"
-    }, // tengo que subir el pdf a algun drive para sacar el link
+    {"imagePath": "assets/IconPDF.png", "title": "Guia de aprendizaje"},
     {
       "imagePath": "assets/IconPDF.png",
       "title": "Estrategias para el docente",
@@ -35,9 +33,9 @@ class HyFlex extends StatelessWidget {
       "url":
           "https://dte.uct.cl/wp-content/uploads/2023/01/Manual-Salas-Hibridas.pdf"
     },
-
-    // Agrega las rutas de tus imágenes y títulos aquí
   ];
+
+  // Creamos una lista para almacenar las imagenes , titulo , url para cada card
 
   final List<Map<String, String?>> imageInfo2 = [
     {
@@ -64,9 +62,9 @@ class HyFlex extends StatelessWidget {
       "url":
           "https://dte.uct.cl/wp-content/uploads/2021/10/DESPUE%CC%81S-DE-LA-CLASE-RECOMENDACIONES-ESTUDIANTES.pdf"
     },
-
-    // Agrega las rutas de tus imágenes y títulos aquí
   ];
+
+  //Creamos un lanzamiento para las conexiones a las url
 
   void launchURL(String url) async =>
       await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
@@ -80,21 +78,22 @@ class HyFlex extends StatelessWidget {
         backgroundColor: Color.fromARGB(255, 235, 250, 151),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              Image.asset("assets/Hyflex.png"),
-              Image.asset("assets/principios.png"),
-              _crearCurso1(),
-              Text('Cursos disponibles para el docente',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              _crearListaDeImagenes(),
-              Text('Cursos disponibles para el Estudiante',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              _crearListaDeImagenes2(),
-            ],
-          ),
+        child: Column(
+          children: <Widget>[
+            Image.asset("assets/Hyflex.png"),
+            Image.asset("assets/principios.png"),
+            _crearCurso1(),
+            Text(
+              'Cursos disponibles para el docente',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            _crearListaDeImagenes(),
+            Text(
+              'Cursos disponibles para el Estudiante',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            _crearListaDeImagenes2(),
+          ],
         ),
       ),
     );
@@ -132,11 +131,11 @@ class HyFlex extends StatelessWidget {
       ),
       itemCount: imageInfo.length,
       shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(), // Deshabilita el desplazamiento
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
           onTap: () {
-            launchURL(imageInfo[index]["url"] ??
-                ""); // Reemplaza "AQUÍ_INSERTA_LA_URL" con la URL correspondiente
+            launchURL(imageInfo[index]["url"] ?? "");
           },
           child: Padding(
             padding: const EdgeInsets.all(5.0),
@@ -177,11 +176,11 @@ class HyFlex extends StatelessWidget {
       ),
       itemCount: imageInfo2.length,
       shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(), // Deshabilita el desplazamiento
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
           onTap: () {
             launchURL(imageInfo2[index]["url"] ?? "");
-            ; // Reemplaza "AQUÍ_INSERTA_LA_URL" con la URL correspondiente
           },
           child: Padding(
             padding: const EdgeInsets.all(5.0),

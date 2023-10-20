@@ -14,9 +14,8 @@ class AgendarPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 235, 250, 151),
-        title: Text('Agendar Hora', style: TextStyle(color: Colors.black)),
-        iconTheme: IconThemeData(color: Colors.black),
+        backgroundColor: Colors.yellow,
+        title: Text('Agendar Hora'),
       ),
       body: Container(
         margin: EdgeInsets.all(10.0),
@@ -101,9 +100,8 @@ class PagCalendario extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 235, 250, 151),
-        title: Text('Agendar Hora', style: TextStyle(color: Colors.black)),
-        iconTheme: IconThemeData(color: Colors.black),
+        backgroundColor: Colors.yellow,
+        title: Text('Agendar Hora'),
       ),
       body: Container(
         margin: EdgeInsets.all(10.0),

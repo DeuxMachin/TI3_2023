@@ -5,7 +5,7 @@ import 'package:ti3/screens/login.dart';
 import 'package:ti3/screens/chatbot.dart';
 import 'package:ti3/screens/perfil.dart';
 import 'package:ti3/screens/foro.dart';
-import 'package:ti3/screens/Cursos/cursos.dart';
+import 'package:ti3/screens/cursos.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
@@ -28,7 +28,11 @@ class MyApp extends StatelessWidget {
       home: HomeScreen(),
       routes: {
         '/Agendar': (context) => AgendarPage(),
-        '/calendario': (context) => PagCalendario(),
+        '/calendario': (context) => PagCalendario(
+              nombre: '',
+              apellidos: '',
+              correo: '',
+            ),
         '/login': (context) => LoginScreen(),
         '/ChatBot': (context) => ChatPage(),
         '/Perfil': (context) => PerfilPage(),

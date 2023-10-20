@@ -10,6 +10,8 @@ import 'package:ti3/screens/Cursos/ModeloEduca.dart';
 import 'package:ti3/screens/Cursos/EducaBlack.dart';
 import 'package:ti3/screens/Cursos/HyFlex.dart';
 import 'package:ti3/screens/Cursos/ImpulsaTuRed.dart';
+import 'package:ti3/utils/authentication.dart';
+import 'package:ti3/screens/login.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -32,6 +34,7 @@ List<Color> catColors = [
   const Color(0XFFCB84FB),
   const Color(0XFF78E667),
 ];
+
 List<Widget> catIcon = [
   Image.asset(
     'assets/blackboard.png', // Ruta de la imagen en la carpeta de assets
@@ -96,12 +99,21 @@ void launchURL(int index) async {
 class _HomePageState extends State<HomePage> {
   int currentIndex = 0;
   List imgList = [
-    'react',
-    'icono',
-    'fea',
-    'cloud',
-    'padlet',
-    'pear',
+    'Virtualiza',
+    'ModeloEducativoInstitucional',
+    'DocenciaOnline',
+    'IntroduccionaEducaBlackboard',
+    'ImpulsaTuRed',
+    'Hyflex',
+  ];
+
+  List nameList = [
+    'Virtualiza',
+    'MEI',
+    'Docencia Online',
+    'Educa Blackboard',
+    'Impulsa Tu Red',
+    'HyFlex',
   ];
   @override
   Widget build(BuildContext context) {
@@ -120,7 +132,7 @@ class _HomePageState extends State<HomePage> {
             ),
             child: Column(
               children: [
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Icon(
@@ -128,11 +140,21 @@ class _HomePageState extends State<HomePage> {
                       size: 30,
                       color: Colors.white,
                     ),
-                    Icon(
-                      Icons.account_circle,
-                      size: 30,
-                      color: Colors.white,
-                    )
+                    IconButton(
+                      icon: Icon(
+                        Icons.account_circle,
+                        size: 30,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        Authentication.logout();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()),
+                        );
+                      },
+                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -255,13 +277,10 @@ class _HomePageState extends State<HomePage> {
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () {
-                        if (index >= 0 && index < cursos.length) {
-                          Navigator.push(
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => cursos[index]),
-                          );
-                        }
+                                builder: (context) => cursos[index]));
                       },
                       child: Container(
                         padding:
@@ -276,13 +295,13 @@ class _HomePageState extends State<HomePage> {
                               padding: EdgeInsets.all(10),
                               child: Image.asset(
                                 "assets/${imgList[index]}.png",
-                                width: 100,
-                                height: 100,
+                                width: 150,
+                                height: 80,
                               ),
                             ),
                             SizedBox(height: 10),
                             Text(
-                              imgList[index],
+                              nameList[index],
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w600,

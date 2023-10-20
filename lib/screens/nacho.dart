@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ti3/screens/HomeSi.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -27,28 +26,24 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset("assets/Icon_login_fondo.jpg"),
-                SingleChildScrollView(
-                  child: Flexible(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color:
-                            Color.fromARGB(255, 174, 243, 242).withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            hintText: "Correo Electronico",
-                            prefixIcon: Icon(
-                              Icons.email,
-                              color: Colors.black.withOpacity(0.5),
-                            ),
-                          ),
-                          cursorColor: Colors.black,
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  height: 60,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      color:
+                          Color.fromARGB(255, 174, 243, 242).withOpacity(0.6),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Center(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        hintText: "Correo Electronico",
+                        prefixIcon: Icon(
+                          Icons.email,
+                          color: Colors.black.withOpacity(0.5),
                         ),
                       ),
+                      cursorColor: Colors.black,
                     ),
                   ),
                 ),
@@ -111,30 +106,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 20),
                 InkWell(
-                  onTap: () {
-                    // Navega a la página Home cuando se hace clic en el botón
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
-                  },
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     height: 60,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 235, 250, 151),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                        color: Color.fromARGB(255, 235, 250, 151),
+                        borderRadius: BorderRadius.circular(10)),
                     child: Center(
                       child: Text(
-                        "Iniciar Sesión",
+                        "Iniciar Sesion",
                         style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          wordSpacing: 2,
-                          color: Colors.black54,
-                        ),
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            wordSpacing: 2,
+                            color: Colors.black54),
                       ),
                     ),
                   ),
@@ -144,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "¿No tienes una cuenta?",
+                      "No tienes una cuenta?",
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.black54,

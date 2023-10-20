@@ -29,11 +29,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("ChatBOT CEDID", style: TextStyle(color: Colors.black)),
-        iconTheme: IconThemeData(color: Colors.black),
-        backgroundColor: Color.fromARGB(255, 235, 250, 151),
-      ),
+      appBar: AppBar(title: Text("ChatBOT CEDID")),
       body: Column(
         children: [
           Expanded(

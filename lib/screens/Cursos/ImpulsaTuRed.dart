@@ -31,7 +31,7 @@ class _ImpulsaRedState extends State<ImpulsaRed> {
         child: Center(
           child: Column(
             children: <Widget>[
-              Image.asset("assets/impulsa_tu_red.png"),
+              Image.asset("assets/ImpulsaTuRed.png"),
               _crearCurso1(),
               Text('Links para completar el formulario',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),

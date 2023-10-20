@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ti3/screens/login.dart';
+import 'package:ti3/utils/globals.dart';
 
 class PerfilPage extends StatefulWidget {
   @override
@@ -54,7 +56,7 @@ class _PerfilPageState extends State<PerfilPage> {
                   color: Colors.teal,
                 ),
                 title: Text(
-                  loggedInUser?.email ?? 'Cargando...',
+                  userEmail ?? 'Cargando...', // Usar userEmail aquí
                   style: TextStyle(
                     fontSize: 20.0,
                     color: Colors.teal.shade900,
