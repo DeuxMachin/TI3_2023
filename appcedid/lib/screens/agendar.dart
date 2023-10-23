@@ -50,12 +50,6 @@ class _AgendarPageState extends State<AgendarPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: NetworkImage(
-                        'https://cdn.britannica.com/85/205685-050-24677990/Ryan-Reynolds-2011.jpg'),
-                  ),
-                  SizedBox(height: 10),
                   Text(
                     selectedAsesor != null
                         ? '${selectedAsesor!['Nombre']} ${selectedAsesor!['Apellidos']}'
@@ -187,7 +181,7 @@ class PagCalendario extends StatefulWidget {
 class _PagCalendarioState extends State<PagCalendario> {
   DateTime? _date;
   Duration _duration = Duration(minutes: 15);
-  final currentUser = FirebaseAuth.instance.currentUser!;
+  final currentUser = FirebaseAuth.instance.currentUser;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn(
     scopes: [
@@ -248,14 +242,7 @@ class _PagCalendarioState extends State<PagCalendario> {
             Expanded(
               flex: 2,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: NetworkImage(
-                        'https://cdn.britannica.com/85/205685-050-24677990/Ryan-Reynolds-2011.jpg'),
-                  ),
-                  SizedBox(height: 10),
                   Text(
                     'Reunirse con ${widget.nombre} ${widget.apellidos}',
                     style: TextStyle(fontSize: 24),
@@ -266,43 +253,42 @@ class _PagCalendarioState extends State<PagCalendario> {
             Divider(),
             // Middle section
             Expanded(
-              flex: 1,
-              child: GestureDetector(
-                onTap: () async {
-                  final date = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2022, 1, 1),
-                    lastDate: DateTime(2023, 12, 31),
-                  );
-                  if (date != null) {
-                    final time = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                    );
-                    if (time != null) {
-                      setState(() {
-                        _date = DateTime(
-                          date.year,
-                          date.month,
-                          date.day,
-                          time.hour,
-                          time.minute,
+              flex: 3,
+              child: Container(
+                color: Colors.blue, // Placeholder for the calendar
+                child: Center(
+                  child: Container(
+                    width: 200.0, // Set your desired width
+                    height: 50.0, // Set your desired height
+                    child: TextButton(
+                      onPressed: () async {
+                        final date = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2022, 1, 1),
+                          lastDate: DateTime(2023, 12, 31),
                         );
-                      });
-                    }
-                  }
-                },
-                child: Container(
-                  color: Colors.blue, // Placeholder for the calendar
-                  child: Center(
-                    child: Container(
-                      width: 200.0, // Adjusted width
-                      height: 20.0, // Adjusted height
+                        if (date != null) {
+                          final time = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+                          if (time != null) {
+                            setState(() {
+                              _date = DateTime(
+                                date.year,
+                                date.month,
+                                date.day,
+                                time.hour,
+                                time.minute,
+                              );
+                            });
+                          }
+                        }
+                      },
                       child: Text(
                         'Seleccionar Fecha y Hora',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
@@ -312,7 +298,7 @@ class _PagCalendarioState extends State<PagCalendario> {
             Divider(),
             // Bottom section
             Expanded(
-              flex: 3,
+              flex: 2,
               child: Column(
                 children: <Widget>[
                   Text(
@@ -350,7 +336,7 @@ class _PagCalendarioState extends State<PagCalendario> {
                   ),
                   Text(
                     _date != null
-                        ? 'Fecha seleccionada: ${_date!.day}/${_date!.month}/${_date!.year}\nHora de la reunión: ${_date!.hour}:${_date!.minute.toString().padLeft(2, '0')}\nDuración de la reunión: ${_duration.inHours} horas y ${_duration.inMinutes.remainder(60)} minutos'
+                        ? 'Fecha seleccionada: $_date Duración de la reunión: $_duration'
                         : 'No se ha seleccionado ninguna fecha',
                     style: TextStyle(fontSize: 24),
                   ),
@@ -406,7 +392,9 @@ class _PagCalendarioState extends State<PagCalendario> {
                       if (!isOverlap) {
                         // Add the event to Firestore
                         event.attendees = [
-                          gcal.EventAttendee(email: widget.correo),
+                          gcal.EventAttendee(
+                              email: widget
+                                  .correo), // Add the asesor's email as an attendee
                         ];
                         await calendar.events.insert(event, 'primary');
 
