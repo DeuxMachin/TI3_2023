@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ti3/utils/database_service.dart'; // Importa el servicio de base de datos aquí
 
 class NewPostForm extends StatefulWidget {
   @override
@@ -10,6 +11,8 @@ class _NewPostFormState extends State<NewPostForm> {
   String title = '';
   String subject = '';
   String body = '';
+  final db =
+      DatabaseService(); // Crea una instancia del servicio de base de datos aquí
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +50,19 @@ class _NewPostFormState extends State<NewPostForm> {
                   ),
                   SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState?.validate() ?? false) {
                         _formKey.currentState?.save();
                         // Aquí puedes manejar la lógica para guardar el post
                         // Por ejemplo, puedes llamar a una función para guardar el post en una base de datos
+                        await db.createPost(
+                            title,
+                            subject,
+                            body,
+                            'olaa',
+                            'https://cdn-icons-png.flaticon.com/512/149/149071.png',
+                            DateTime.now());
+                        Navigator.pop(context);
                       }
                     },
                     child: Text('Submit'),

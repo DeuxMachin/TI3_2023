@@ -5,6 +5,7 @@ import 'package:googleapis/calendar/v3.dart' as gcal;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ti3/screens/showmeetings.dart';
 
 // ignore: must_be_immutable
 class AgendarPage extends StatefulWidget {
@@ -37,6 +38,23 @@ class _AgendarPageState extends State<AgendarPage> {
         backgroundColor: Color.fromARGB(255, 235, 250, 151),
         title: Text('Agendar Hora', style: TextStyle(color: Colors.black)),
         iconTheme: IconThemeData(color: Colors.black),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MeetingsPage()),
+              );
+            },
+            child: Row(
+              children: [
+                Icon(Icons.calendar_today),
+                SizedBox(width: 4), //Space between text and icon
+                Text('Reuniones'),
+              ],
+            ),
+          ),
+        ],
       ),
       body: Container(
         margin: EdgeInsets.all(10.0),
@@ -457,14 +475,37 @@ class _PagCalendarioState extends State<PagCalendario> {
                               email: widget
                                   .correo), // Add the asesor's email as an attendee
                         ];
-                        await calendar.events.insert(event, 'primary');
+                        gcal.Event createdEvent =
+                            await calendar.events.insert(event, 'primary');
 
                         // After successful insertion, add the event to Firestore
                         await firestore.collection('reunion').add({
-                          'summary': event.summary,
+                          'summary': createdEvent.summary,
                           'start': event.start!.dateTime!.toIso8601String(),
                           'end': event.end!.dateTime!.toIso8601String(),
+                          'email': currentUser?.email,
+                          'googleEventId': createdEvent
+                              .id, // Use the ID from the created event
                         });
+
+                        // Show a message that the event was created successfully
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Raunión agendada'),
+                              content: Text('Hora reservada correctamente.'),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text('Continuar'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       } else {
                         // Show a message that the event overlaps with an existing event
                         showDialog(
