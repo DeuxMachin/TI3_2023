@@ -1,38 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class Cursospage extends StatelessWidget {
+class ImpulsaRed extends StatefulWidget {
+  @override
+  _ImpulsaRedState createState() => _ImpulsaRedState();
+}
+
+class _ImpulsaRedState extends State<ImpulsaRed> {
   final List<Map<String, String?>> imageInfo = [
-    {"imagePath": "assets/documentos.png", "title": "Documentos"},
     {
-      "imagePath": "assets/ejemplos_de_presentacion.png",
-      "title": "Ejemplos de presentacion"
+      "imagePath": "assets/IconPDF.png",
+      "title": "Impulsa tu red ",
+      "url": "https://dte.uct.cl/impulsatured/ "
     },
-    {
-      "imagePath": "assets/e_actividades.png",
-      "title": "Ejemplos de actividades"
-    },
-    {"imagePath": "assets/ejemplo_red.png", "title": "Ejemplos de RED"},
-    {"imagePath": "assets/guiones.png", "title": "Formatos de Guiones"},
-    {"imagePath": "assets/herramientas_tic.png", "title": "Herramientas TIC"},
-    {"imagePath": "assets/banner.png", "title": "Banner"},
-    {"imagePath": "assets/seguimiento.png", "title": "Seguimiento"},
     // Agrega las rutas de tus imágenes y títulos aquí
   ];
 
+  void launchURL(String url) async =>
+      await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Curso"),
+        title: Text("Impulsa Tu Red", style: TextStyle(color: Colors.black)),
+        iconTheme: IconThemeData(color: Colors.black),
+        backgroundColor: Color.fromARGB(255, 235, 250, 151),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20),
         child: Center(
           child: Column(
             children: <Widget>[
-              Image.asset("assets/Virtualiza.png"),
-              Image.asset("assets/principios_orientadores.png"),
+              Image.asset("assets/ImpulsaTuRed.png"),
               _crearCurso1(),
+              Text('Links para completar el formulario',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               _crearListaDeImagenes(),
             ],
           ),
@@ -57,7 +59,7 @@ class Cursospage extends StatelessWidget {
               height: 20,
             ),
             Text(
-              'El e-learning está pensado para ejercer una acción formativa, basando el proceso de aprendizaje, en una interacción completamente sostenida en tecnología, sin necesidad del contacto físico del alumno con el profesor, ni tampoco la asistencia del alumno a una sala de clases.',
+              "El presente formulario tiene por finalidad recoger la información del tipo de Recurso Educativo Digital que quieres modificar. Agradecemos tu interés y en un plazo de tres días hábiles nos contactaremos contigo para iniciar el proceso de asesoría y co-creación. El proceso de inscripción está abierto hasta fines de mayo y los RED que se “re- diseñan” se aplican el II semestre del año en curso.¡Gracias!",
               style: TextStyle(fontSize: 18),
             )
           ],
@@ -74,20 +76,24 @@ class Cursospage extends StatelessWidget {
       itemCount: imageInfo.length,
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
-        return Padding(
-            padding: const EdgeInsets.all(8.0),
+        return GestureDetector(
+          onTap: () {
+            launchURL(imageInfo[index]["url"] ?? "");
+            ; // Reemplaza "AQUÍ_INSERTA_LA_URL" con la URL correspondiente
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
             child: Card(
-              elevation: 5,
+              elevation: 10,
               child: Container(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(5.0),
                 child: Column(
                   children: <Widget>[
                     Image.asset(
                       imageInfo[index]["imagePath"] ?? "",
-                      width: 120, // Ajusta el ancho de la imagen
-                      height: 90, // Ajusta la altura de la imagen
-                      fit: BoxFit
-                          .contain, // Ajusta el modo de ajuste de la imagen
+                      width: 120,
+                      height: 80,
+                      fit: BoxFit.contain,
                     ),
                     SizedBox(height: 10),
                     Text(
@@ -100,7 +106,9 @@ class Cursospage extends StatelessWidget {
                   ],
                 ),
               ),
-            ));
+            ),
+          ),
+        );
       },
     );
   }
