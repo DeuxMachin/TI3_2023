@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:ti3/screens/Cursos/DocenciaLinea.dart';
 import 'package:ti3/screens/agendar.dart';
-import 'package:ti3/screens/login.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ti3/screens/chatbot.dart';
 import 'package:ti3/screens/perfil.dart';
 import 'package:ti3/screens/foro.dart';
-import 'package:ti3/screens/cursos.dart';
+import 'package:ti3/screens/Cursos/cursos.dart';
+import 'package:ti3/screens/Cursos/ModeloEduca.dart';
+import 'package:ti3/screens/Cursos/EducaBlack.dart';
+import 'package:ti3/screens/Cursos/HyFlex.dart';
+import 'package:ti3/screens/Cursos/ImpulsaTuRed.dart';
 import 'package:ti3/utils/authentication.dart';
+import 'package:ti3/screens/login.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -29,6 +34,7 @@ List<Color> catColors = [
   const Color(0XFFCB84FB),
   const Color(0XFF78E667),
 ];
+
 List<Widget> catIcon = [
   Image.asset(
     'assets/blackboard.png', // Ruta de la imagen en la carpeta de assets
@@ -54,7 +60,14 @@ List<Widget> catIcon = [
   ),
 ];
 
-final cursos = [Cursospage()]; // Para rutas de los cursos a trabajar.
+final cursos = [
+  Cursospage(),
+  ModeloEduca(),
+  DocenciaLinea(),
+  EducaBlack(),
+  ImpulsaRed(),
+  HyFlex()
+]; // Para rutas de los cursos a trabajar.
 
 final pages = [
   //Para las rutas del navbar.
@@ -77,7 +90,7 @@ List<String> catUrls = [
 void launchURL(int index) async {
   Uri url = Uri.parse(catUrls[index]);
   try {
-    await launchUrl(url);
+    await launch(url.toString());
   } catch (e) {
     throw 'No se pudo lanzar $url';
   }
@@ -86,12 +99,21 @@ void launchURL(int index) async {
 class _HomePageState extends State<HomePage> {
   int currentIndex = 0;
   List imgList = [
-    'react',
-    'icono',
-    'fea',
-    'cloud',
-    'padlet',
-    'pear',
+    'Virtualiza',
+    'ModeloEducativoInstitucional',
+    'DocenciaOnline',
+    'IntroduccionaEducaBlackboard',
+    'ImpulsaTuRed',
+    'Hyflex',
+  ];
+
+  List nameList = [
+    'Virtualiza',
+    'MEI',
+    'Docencia Online',
+    'Educa Blackboard',
+    'Impulsa Tu Red',
+    'HyFlex',
   ];
   @override
   Widget build(BuildContext context) {
@@ -273,13 +295,13 @@ class _HomePageState extends State<HomePage> {
                               padding: EdgeInsets.all(10),
                               child: Image.asset(
                                 "assets/${imgList[index]}.png",
-                                width: 100,
-                                height: 100,
+                                width: 150,
+                                height: 80,
                               ),
                             ),
                             SizedBox(height: 10),
                             Text(
-                              imgList[index],
+                              nameList[index],
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w600,

@@ -1,6 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class PerfilPage extends StatelessWidget {
+class PerfilPage extends StatefulWidget {
+  @override
+  _PerfilPageState createState() => _PerfilPageState();
+}
+
+class _PerfilPageState extends State<PerfilPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? loggedInUser;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser() {
+    loggedInUser = _auth.currentUser;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,10 +36,10 @@ class PerfilPage extends StatelessWidget {
           children: <Widget>[
             CircleAvatar(
               radius: 110.0,
-              backgroundImage: AssetImage('assets/user.png'),
+              backgroundImage: AssetImage('assets/user.jpg'),
             ),
             Text(
-              'Nombre del Docente',
+              loggedInUser?.displayName ?? 'Cargando...',
               style: TextStyle(
                 fontSize: 40.0,
                 color: Colors.white,
@@ -30,75 +50,11 @@ class PerfilPage extends StatelessWidget {
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
               child: ListTile(
                 leading: Icon(
-                  Icons.person,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  'Nombre Y Apellido',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.teal.shade900,
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.cake,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  '07-06-1988',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.teal.shade900,
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.phone,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  '+56900001111',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.teal.shade900,
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
                   Icons.email,
                   color: Colors.teal,
                 ),
                 title: Text(
-                  'docente@uct.cl',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.teal.shade900,
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.lock,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  'FideosConSalsa44232',
+                  loggedInUser?.email ?? 'Cargando...',
                   style: TextStyle(
                     fontSize: 20.0,
                     color: Colors.teal.shade900,
