@@ -1,12 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-Future<DocumentSnapshot> getUserData(String userId) async {
-  return await FirebaseFirestore.instance.collection('users').doc(userId).get();
-}
-
 class Post {
   String title;
-  String subject;
+  String subtitle;
   String body;
   String author;
   String userImg;
@@ -14,7 +8,7 @@ class Post {
   int likes = 0;
   bool userLiked = false;
 
-  Post(this.title, this.subject, this.body, this.author, this.userImg,
+  Post(this.title, this.subtitle, this.body, this.author, this.userImg,
       this.time);
 
   void likePost() {

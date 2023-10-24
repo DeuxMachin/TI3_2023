@@ -5,7 +5,6 @@ import 'package:googleapis/calendar/v3.dart' as gcal;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ti3/screens/showmeetings.dart';
 
 // ignore: must_be_immutable
 class AgendarPage extends StatefulWidget {
@@ -14,21 +13,23 @@ class AgendarPage extends StatefulWidget {
 }
 
 class _AgendarPageState extends State<AgendarPage> {
+  List<String> dates = [
+    'Lunes 08:00-18:00',
+    'Martes 08:00-18:00',
+    'Miercoles 08:00-18:00',
+    'Jueves 08:00-18:00',
+    'Viernes 08:00-18:00'
+  ];
+
   Map<String, dynamic>? selectedAsesor;
 
   Future<List<Map<String, dynamic>>> fetchAsesores() async {
     final CollectionReference asesores =
         FirebaseFirestore.instance.collection('Asesores');
     final QuerySnapshot snapshot = await asesores.get();
-    List<Map<String, dynamic>> asesoresList = [];
-    for (var doc in snapshot.docs) {
-      var asesorData = doc.data() as Map<String, dynamic>;
-      // Assuming the dates are stored as a list in the 'Dates' field in each Asesor document
-      List<String>? asesorDates = List<String>.from(asesorData['Dates'] ?? []);
-      asesorData['Dates'] = asesorDates;
-      asesoresList.add(asesorData);
-    }
-    return asesoresList;
+    return snapshot.docs
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList();
   }
 
   @override
@@ -38,23 +39,6 @@ class _AgendarPageState extends State<AgendarPage> {
         backgroundColor: Color.fromARGB(255, 235, 250, 151),
         title: Text('Agendar Hora', style: TextStyle(color: Colors.black)),
         iconTheme: IconThemeData(color: Colors.black),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MeetingsPage()),
-              );
-            },
-            child: Row(
-              children: [
-                Icon(Icons.calendar_today),
-                SizedBox(width: 4), //Space between text and icon
-                Text('Reuniones'),
-              ],
-            ),
-          ),
-        ],
       ),
       body: Container(
         margin: EdgeInsets.all(10.0),
@@ -62,12 +46,12 @@ class _AgendarPageState extends State<AgendarPage> {
           children: <Widget>[
             // Top section
             Expanded(
-              flex: 3,
+              flex: 2,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircleAvatar(
-                    radius: 100,
+                    radius: 50,
                     backgroundImage: NetworkImage(
                         'https://cdn.britannica.com/85/205685-050-24677990/Ryan-Reynolds-2011.jpg'),
                   ),
@@ -89,7 +73,7 @@ class _AgendarPageState extends State<AgendarPage> {
             Divider(),
             // Middle section
             Expanded(
-              flex: 2,
+              flex: 3,
               child: FutureBuilder<List<Map<String, dynamic>>>(
                 future: fetchAsesores(),
                 builder: (context, snapshot) {
@@ -147,12 +131,10 @@ class _AgendarPageState extends State<AgendarPage> {
                   // List of dates with time
                   Expanded(
                     child: ListView.builder(
-                      itemCount: selectedAsesor != null
-                          ? selectedAsesor!['Dates'].length
-                          : 0,
+                      itemCount: dates.length,
                       itemBuilder: (context, index) {
                         return ListTile(
-                          title: Text(selectedAsesor!['Dates'][index]),
+                          title: Text(dates[index]),
                         );
                       },
                     ),
@@ -205,7 +187,7 @@ class PagCalendario extends StatefulWidget {
 class _PagCalendarioState extends State<PagCalendario> {
   DateTime? _date;
   Duration _duration = Duration(minutes: 15);
-  final currentUser = FirebaseAuth.instance.currentUser;
+  final currentUser = FirebaseAuth.instance.currentUser!;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn(
     scopes: [
@@ -213,15 +195,7 @@ class _PagCalendarioState extends State<PagCalendario> {
       'https://www.googleapis.com/auth/calendar',
     ],
   );
-  //Mapping so that it works for the Firestore Dates field
-  final dayMapping = {
-    'Lunes': DateTime.monday,
-    'Martes': DateTime.tuesday,
-    'Miércoles': DateTime.wednesday,
-    'Jueves': DateTime.thursday,
-    'Viernes': DateTime.friday,
-  };
-  //Check if another event is being stored at the same time and check for Asesor's availability
+  //Check if another event is being stored at the same time
   Future<bool> isOverlapping(DateTime start, DateTime end) async {
     // Query for events that start before the end of the new event
     QuerySnapshot querySnapshot1 = await FirebaseFirestore.instance
@@ -255,60 +229,7 @@ class _PagCalendarioState extends State<PagCalendario> {
       }
     }
 
-    // Check Asesor availability
-    QuerySnapshot asesorAvailability = await FirebaseFirestore.instance
-        .collection('Asesores')
-        .where('Correo', isEqualTo: widget.correo)
-        .get();
-
-    if (asesorAvailability.docs.isEmpty) {
-      // Check if there's no data about the Asesor's availability
-      return true;
-    }
-
-    // Extract available dates
-    List<String> availableDates =
-        List.from(asesorAvailability.docs.first['Dates']);
-
-    for (String range in availableDates) {
-      final components =
-          range.split(' '); // Split by space to get day and time range
-      if (components.length != 2)
-        continue; // Skip if format is not well written
-
-      final dayName = components[0];
-      final timeRange = components[1].split('-');
-
-      if (timeRange.length != 2)
-        continue; // Skip if time range format is not well written
-
-      final dayNumber = dayMapping[dayName];
-      if (dayNumber == null || dayNumber != start.weekday)
-        continue; // Check if the day matches
-
-      final startTimeComponents =
-          timeRange[0].split(':').map((e) => int.parse(e)).toList();
-      final endTimeComponents =
-          timeRange[1].split(':').map((e) => int.parse(e)).toList();
-
-      if (startTimeComponents.length != 2 || endTimeComponents.length != 2)
-        continue;
-
-      final rangeStart = DateTime(start.year, start.month, start.day,
-          startTimeComponents[0], startTimeComponents[1]);
-      final rangeEnd = DateTime(start.year, start.month, start.day,
-          endTimeComponents[0], endTimeComponents[1]);
-
-      if ((start.isAfter(rangeStart) && start.isBefore(rangeEnd)) ||
-          (end.isAfter(rangeStart) && end.isBefore(rangeEnd)) ||
-          start.isAtSameMomentAs(rangeStart) ||
-          end.isAtSameMomentAs(rangeEnd) ||
-          (start.isBefore(rangeEnd) && end.isAfter(rangeStart))) {
-        return false;
-      }
-    }
-
-    return true;
+    return false;
   }
 
   @override
@@ -325,11 +246,12 @@ class _PagCalendarioState extends State<PagCalendario> {
           children: <Widget>[
             // Top section
             Expanded(
-              flex: 3,
+              flex: 2,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircleAvatar(
-                    radius: 100,
+                    radius: 50,
                     backgroundImage: NetworkImage(
                         'https://cdn.britannica.com/85/205685-050-24677990/Ryan-Reynolds-2011.jpg'),
                   ),
@@ -390,7 +312,7 @@ class _PagCalendarioState extends State<PagCalendario> {
             Divider(),
             // Bottom section
             Expanded(
-              flex: 2,
+              flex: 3,
               child: Column(
                 children: <Widget>[
                   Text(
@@ -484,41 +406,16 @@ class _PagCalendarioState extends State<PagCalendario> {
                       if (!isOverlap) {
                         // Add the event to Firestore
                         event.attendees = [
-                          gcal.EventAttendee(
-                              email: widget
-                                  .correo), // Add the asesor's email as an attendee
+                          gcal.EventAttendee(email: widget.correo),
                         ];
-                        gcal.Event createdEvent =
-                            await calendar.events.insert(event, 'primary');
+                        await calendar.events.insert(event, 'primary');
 
                         // After successful insertion, add the event to Firestore
                         await firestore.collection('reunion').add({
-                          'summary': createdEvent.summary,
+                          'summary': event.summary,
                           'start': event.start!.dateTime!.toIso8601String(),
                           'end': event.end!.dateTime!.toIso8601String(),
-                          'email': currentUser?.email,
-                          'googleEventId': createdEvent
-                              .id, // Use the ID from the created event
                         });
-
-                        // Show a message that the event was created successfully
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Raunión agendada'),
-                              content: Text('Hora reservada correctamente.'),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: Text('Continuar'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
                       } else {
                         // Show a message that the event overlaps with an existing event
                         showDialog(
@@ -527,7 +424,7 @@ class _PagCalendarioState extends State<PagCalendario> {
                             return AlertDialog(
                               title: Text('Error'),
                               content: Text(
-                                  'Hora ya reservada o asesor no disponible en ese horario.'),
+                                  'La hora seleccionada ya tiene una reunión agendada.'),
                               actions: <Widget>[
                                 TextButton(
                                   child: Text('Continuar'),

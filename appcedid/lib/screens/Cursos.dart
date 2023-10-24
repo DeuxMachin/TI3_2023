@@ -23,7 +23,9 @@ class Cursospage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Curso"),
+        title: Text("Curso", style: TextStyle(color: Colors.black)),
+        iconTheme: IconThemeData(color: Colors.black),
+        backgroundColor: Color.fromARGB(255, 235, 250, 151),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20),
@@ -85,7 +87,7 @@ class Cursospage extends StatelessWidget {
                     Image.asset(
                       imageInfo[index]["imagePath"] ?? "",
                       width: 120, // Ajusta el ancho de la imagen
-                      height: 90, // Ajusta la altura de la imagen
+                      height: 80, // Ajusta la altura de la imagen
                       fit: BoxFit
                           .contain, // Ajusta el modo de ajuste de la imagen
                     ),

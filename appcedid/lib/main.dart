@@ -6,7 +6,6 @@ import 'package:ti3/screens/chatbot.dart';
 import 'package:ti3/screens/perfil.dart';
 import 'package:ti3/screens/foro.dart';
 import 'package:ti3/screens/cursos.dart';
-import 'package:ti3/screens/showmeetings.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
@@ -39,7 +38,6 @@ class MyApp extends StatelessWidget {
         '/Perfil': (context) => PerfilPage(),
         '/Foro': (context) => ForoPage(),
         '/Cursos': (context) => Cursospage(),
-        '/Reuniones': (context) => MeetingsPage(),
       },
     );
   }
