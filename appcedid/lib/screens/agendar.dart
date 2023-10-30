@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ti3/screens/showmeetings.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 // ignore: must_be_immutable
 class AgendarPage extends StatefulWidget {
@@ -203,8 +204,9 @@ class PagCalendario extends StatefulWidget {
 }
 
 class _PagCalendarioState extends State<PagCalendario> {
-  DateTime? _date;
-  Duration _duration = Duration(minutes: 15);
+  DateTime? _selectedDay;
+  TimeOfDay? _selectedTime;
+  Duration? _duration;
   final currentUser = FirebaseAuth.instance.currentUser;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn(
@@ -325,14 +327,9 @@ class _PagCalendarioState extends State<PagCalendario> {
           children: <Widget>[
             // Top section
             Expanded(
-              flex: 3,
+              flex: 0,
               child: Column(
                 children: [
-                  CircleAvatar(
-                    radius: 100,
-                    backgroundImage: NetworkImage(
-                        'https://cdn.britannica.com/85/205685-050-24677990/Ryan-Reynolds-2011.jpg'),
-                  ),
                   SizedBox(height: 10),
                   Text(
                     'Reunirse con ${widget.nombre} ${widget.apellidos}',
@@ -344,46 +341,46 @@ class _PagCalendarioState extends State<PagCalendario> {
             Divider(),
             // Middle section
             Expanded(
-              flex: 1,
-              child: GestureDetector(
-                onTap: () async {
-                  final date = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2022, 1, 1),
-                    lastDate: DateTime(2023, 12, 31),
-                  );
-                  if (date != null) {
-                    final time = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                    );
-                    if (time != null) {
-                      setState(() {
-                        _date = DateTime(
-                          date.year,
-                          date.month,
-                          date.day,
-                          time.hour,
-                          time.minute,
-                        );
-                      });
-                    }
-                  }
-                },
-                child: Container(
-                  color: Colors.blue, // Placeholder for the calendar
-                  child: Center(
-                    child: Container(
-                      width: 200.0, // Adjusted width
-                      height: 20.0, // Adjusted height
-                      child: Text(
-                        'Seleccionar Fecha y Hora',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                        textAlign: TextAlign.center,
-                      ),
+              flex: 5,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    TableCalendar(
+                      firstDay: DateTime.utc(2010, 10, 16),
+                      lastDay: DateTime.utc(2030, 3, 14),
+                      focusedDay: _selectedDay ?? DateTime.now(),
+                      selectedDayPredicate: (day) {
+                        return isSameDay(_selectedDay, day);
+                      },
+                      onDaySelected: (selectedDay, focusedDay) {
+                        if (selectedDay.isBefore(DateTime.now())) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text(
+                                    'No puedes seleccionar un día pasado')),
+                          );
+                          return; // Do not update state if selected day is before today
+                        }
+                        setState(() {
+                          _selectedDay = selectedDay;
+                        });
+                      },
                     ),
-                  ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        final TimeOfDay? pickedTime = await showTimePicker(
+                          context: context,
+                          initialTime: _selectedTime ?? TimeOfDay.now(),
+                        );
+                        if (pickedTime != null && pickedTime != _selectedTime) {
+                          setState(() {
+                            _selectedTime = pickedTime;
+                          });
+                        }
+                      },
+                      child: Text('Seleccionar Hora'),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -391,155 +388,184 @@ class _PagCalendarioState extends State<PagCalendario> {
             // Bottom section
             Expanded(
               flex: 2,
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    '¿Cuánto tiempo necesitará?',
-                    style: TextStyle(fontSize: 24),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _duration = Duration(minutes: 15);
-                          });
-                        },
-                        child: Text('15 minutos'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _duration = Duration(minutes: 30);
-                          });
-                        },
-                        child: Text('30 minutos'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _duration = Duration(hours: 1);
-                          });
-                        },
-                        child: Text('1 hora'),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    _date != null
-                        ? 'Fecha seleccionada: ${_date!.day}/${_date!.month}/${_date!.year}\nHora de la reunión: ${_date!.hour}:${_date!.minute.toString().padLeft(2, '0')}\nDuración de la reunión: ${_duration.inHours} horas y ${_duration.inMinutes.remainder(60)} minutos'
-                        : 'No se ha seleccionado ninguna fecha',
-                    style: TextStyle(fontSize: 24),
-                  ),
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      '¿Cuánto tiempo necesitará?',
+                      style: TextStyle(fontSize: 24),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _duration = Duration(minutes: 15);
+                            });
+                          },
+                          child: Text('15 minutos'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _duration = Duration(minutes: 30);
+                            });
+                          },
+                          child: Text('30 minutos'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _duration = Duration(hours: 1);
+                            });
+                          },
+                          child: Text('1 hora'),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      _selectedDay != null && _selectedTime != null
+                          ? 'Fecha seleccionada: ${_selectedDay!.day}/${_selectedDay!.month}/${_selectedDay!.year}\nHora de la reunión: ${_selectedTime!.hour}:${_selectedTime!.minute.toString().padLeft(2, '0')}\nDuración de la reunión: ${_duration?.inHours ?? 0} horas y ${_duration?.inMinutes.remainder(60) ?? 0} minutos'
+                          : 'No se ha seleccionado ninguna fecha',
+                      style: TextStyle(fontSize: 24),
+                    ),
+                  ],
+                ),
               ),
             ),
             Divider(),
             // Button
             ElevatedButton(
               onPressed: () async {
-                if (_date != null) {
-                  final GoogleSignInAccount? googleUser =
-                      await googleSignIn.signIn();
+                if (_selectedDay == null ||
+                    _selectedTime == null ||
+                    _duration == null) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Error'),
+                        content: Text('No hay día o hora seleccionada'),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text('OK'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  return;
+                }
+                DateTime appointmentDateTime = DateTime(
+                  _selectedDay!.year,
+                  _selectedDay!.month,
+                  _selectedDay!.day,
+                  _selectedTime!.hour,
+                  _selectedTime!.minute,
+                );
+                final GoogleSignInAccount? googleUser =
+                    await googleSignIn.signIn();
 
-                  if (googleUser != null) {
-                    final GoogleSignInAuthentication googleAuth =
-                        await googleUser.authentication;
+                if (googleUser != null) {
+                  final GoogleSignInAuthentication googleAuth =
+                      await googleUser.authentication;
 
-                    final http.Client httpClient = http.Client();
-                    final accessToken = googleAuth.accessToken;
-                    final idToken = googleAuth.idToken;
-                    final expiryTime = DateTime.now()
-                        .add(Duration(hours: 1))
-                        .toUtc(); // Set expiry time
-                    final scopes = <String>[
-                      'https://www.googleapis.com/auth/calendar'
-                    ]; // Set scopes
-                    final credentials = googleapis_auth.AccessCredentials(
-                      googleapis_auth.AccessToken(
-                          'Bearer', accessToken!, expiryTime),
-                      idToken,
-                      scopes,
-                    );
-                    final authenticatedClient = googleapis_auth
-                        .authenticatedClient(httpClient, credentials);
+                  final http.Client httpClient = http.Client();
+                  final accessToken = googleAuth.accessToken;
+                  final idToken = googleAuth.idToken;
+                  final expiryTime = DateTime.now()
+                      .add(Duration(hours: 1))
+                      .toUtc(); // Set expiry time
+                  final scopes = <String>[
+                    'https://www.googleapis.com/auth/calendar'
+                  ]; // Set scopes
+                  final credentials = googleapis_auth.AccessCredentials(
+                    googleapis_auth.AccessToken(
+                        'Bearer', accessToken!, expiryTime),
+                    idToken,
+                    scopes,
+                  );
+                  final authenticatedClient = googleapis_auth
+                      .authenticatedClient(httpClient, credentials);
 
-                    final start = gcal.EventDateTime()
-                      ..dateTime = _date
-                      ..timeZone = 'America/Santiago';
-                    final end = gcal.EventDateTime()
-                      ..dateTime = _date!.add(_duration)
-                      ..timeZone = 'America/Santiago';
-                    final calendar = gcal.CalendarApi(authenticatedClient);
-                    final event = gcal.Event()
-                      ..summary =
-                          'Reunión con ${widget.nombre} ${widget.apellidos}'
-                      ..start = start
-                      ..end = end;
+                  final start = gcal.EventDateTime()
+                    ..dateTime = appointmentDateTime
+                    ..timeZone = 'America/Santiago';
+                  final end = gcal.EventDateTime()
+                    ..dateTime = appointmentDateTime.add(_duration!)
+                    ..timeZone = 'America/Santiago';
+                  final calendar = gcal.CalendarApi(authenticatedClient);
+                  final event = gcal.Event()
+                    ..summary =
+                        'Reunión con ${widget.nombre} ${widget.apellidos}'
+                    ..start = start
+                    ..end = end;
 
-                    if (_date != null) {
-                      bool isOverlap =
-                          await isOverlapping(_date!, _date!.add(_duration));
-                      if (!isOverlap) {
-                        // Add the event to Firestore
-                        event.attendees = [
-                          gcal.EventAttendee(
-                              email: widget
-                                  .correo), // Add the asesor's email as an attendee
-                        ];
-                        gcal.Event createdEvent =
-                            await calendar.events.insert(event, 'primary');
+                  if (appointmentDateTime != null) {
+                    bool isOverlap = await isOverlapping(appointmentDateTime!,
+                        appointmentDateTime.add(_duration!));
+                    if (!isOverlap) {
+                      // Add the event to Firestore
+                      event.attendees = [
+                        gcal.EventAttendee(
+                            email: widget
+                                .correo), // Add the asesor's email as an attendee
+                      ];
+                      gcal.Event createdEvent =
+                          await calendar.events.insert(event, 'primary');
 
-                        // After successful insertion, add the event to Firestore
-                        await firestore.collection('reunion').add({
-                          'summary': createdEvent.summary,
-                          'start': event.start!.dateTime!.toIso8601String(),
-                          'end': event.end!.dateTime!.toIso8601String(),
-                          'email': currentUser?.email,
-                          'googleEventId': createdEvent
-                              .id, // Use the ID from the created event
-                        });
+                      // After successful insertion, add the event to Firestore
+                      await firestore.collection('reunion').add({
+                        'summary': createdEvent.summary,
+                        'start': event.start!.dateTime!.toIso8601String(),
+                        'end': event.end!.dateTime!.toIso8601String(),
+                        'email': currentUser?.email,
+                        'googleEventId': createdEvent
+                            .id, // Use the ID from the created event
+                      });
 
-                        // Show a message that the event was created successfully
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Raunión agendada'),
-                              content: Text('Hora reservada correctamente.'),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: Text('Continuar'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      } else {
-                        // Show a message that the event overlaps with an existing event
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Error'),
-                              content: Text(
-                                  'Hora ya reservada o asesor no disponible en ese horario.'),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: Text('Continuar'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      }
+                      // Show a message that the event was created successfully
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Raunión agendada'),
+                            content: Text('Hora reservada correctamente.'),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text('Continuar'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    } else {
+                      // Show a message that the event overlaps with an existing event
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Error'),
+                            content: Text(
+                                'Hora ya reservada o asesor no disponible en ese horario.'),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text('Continuar'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     }
                   }
                 }
