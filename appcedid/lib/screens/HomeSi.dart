@@ -143,17 +143,14 @@ class _HomePageState extends State<HomePage> with RouteAware {
                     ),
                     IconButton(
                       icon: Icon(
-                        Icons.account_circle,
+                        Icons.logout,
                         size: 30,
                         color: Colors.white,
                       ),
                       onPressed: () {
                         Authentication.logout();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginScreen()),
-                        );
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            '/login', (Route<dynamic> route) => false);
                       },
                     ),
                   ],

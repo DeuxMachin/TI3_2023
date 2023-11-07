@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Importar Firestore
+import 'package:ti3/main.dart';
 import 'package:ti3/screens/HomeSi.dart';
 import 'package:ti3/utils/authentication.dart';
 
@@ -9,7 +10,7 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> with RouteAware {
   bool rememberMe = false;
 
   // Controladores para los campos de texto
@@ -22,6 +23,21 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    // User swiped back to this page, so we log them out
+    setState(() {
+      Authentication.logout();
+    });
   }
 
   // Función para iniciar sesión
@@ -48,6 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, //Remove back arrow
         iconTheme: IconThemeData(color: Colors.black),
         backgroundColor: Color.fromARGB(255, 235, 250, 151),
         title: Text('Ingresar a Cuenta', style: TextStyle(color: Colors.black)),
