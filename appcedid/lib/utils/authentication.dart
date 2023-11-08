@@ -22,12 +22,17 @@ class Authentication {
         user = userCredential.user;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {
-          // error
+          // Puedes personalizar este mensaje según tus necesidades
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content:
+                  Text("La cuenta ya existe con una credencial diferente.")));
         } else if (e.code == 'invalid-credential') {
-          // error
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Credencial inválida.")));
         }
       } catch (e) {
-        // error
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Ocurrió un error al iniciar sesión: $e")));
       }
     }
     return user;

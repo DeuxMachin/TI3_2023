@@ -1,38 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class Cursospage extends StatelessWidget {
+class EducaBlack extends StatelessWidget {
   final List<Map<String, String?>> imageInfo = [
-    {"imagePath": "assets/documentos.png", "title": "Documentos"},
     {
-      "imagePath": "assets/ejemplos_de_presentacion.png",
-      "title": "Ejemplos de presentacion"
+      "imagePath": "assets/CPC.jpg",
+      "title": "Crea tu propio banner de curso",
+      "url": "https://dte.uct.cl/recursos-graficos/banner-de-curso-blackboard/"
     },
     {
-      "imagePath": "assets/e_actividades.png",
-      "title": "Ejemplos de actividades"
+      "imagePath": "assets/ReCoCu.jpg",
+      "title": "Recursos para el contenido de tu curso",
+      "url": "https://dte.uct.cl/recursos-graficos/plantillas-ppt/"
     },
-    {"imagePath": "assets/ejemplo_red.png", "title": "Ejemplos de RED"},
-    {"imagePath": "assets/guiones.png", "title": "Formatos de Guiones"},
-    {"imagePath": "assets/herramientas_tic.png", "title": "Herramientas TIC"},
-    {"imagePath": "assets/banner.png", "title": "Banner"},
-    {"imagePath": "assets/seguimiento.png", "title": "Seguimiento"},
     // Agrega las rutas de tus imágenes y títulos aquí
   ];
+
+  void launchURL(String url) async =>
+      await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Curso"),
+        title: Text("Introduccion a EducaBlackboard",
+            style: TextStyle(color: Colors.black)),
+        iconTheme: IconThemeData(color: Colors.black),
+        backgroundColor: Color.fromARGB(255, 235, 250, 151),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20),
         child: Center(
           child: Column(
             children: <Widget>[
-              Image.asset("assets/Virtualiza.png"),
-              Image.asset("assets/principios_orientadores.png"),
+              Image.asset("assets/IntroduccionaEducaBlackboard.png"),
               _crearCurso1(),
+              Text('Cursos relacionados a EducaBlackboard',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               _crearListaDeImagenes(),
             ],
           ),
@@ -57,7 +61,7 @@ class Cursospage extends StatelessWidget {
               height: 20,
             ),
             Text(
-              'El e-learning está pensado para ejercer una acción formativa, basando el proceso de aprendizaje, en una interacción completamente sostenida en tecnología, sin necesidad del contacto físico del alumno con el profesor, ni tampoco la asistencia del alumno a una sala de clases.',
+              "Este curso apoya al desarrollo de las competencias para el uso de plataformas académicas LMS y trabajo colaborativo en red para docentes.",
               style: TextStyle(fontSize: 18),
             )
           ],
@@ -74,20 +78,24 @@ class Cursospage extends StatelessWidget {
       itemCount: imageInfo.length,
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
-        return Padding(
-            padding: const EdgeInsets.all(8.0),
+        return GestureDetector(
+          onTap: () {
+            launchURL(imageInfo[index]["url"] ??
+                ""); // Reemplaza "AQUÍ_INSERTA_LA_URL" con la URL correspondiente
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
             child: Card(
-              elevation: 5,
+              elevation: 10,
               child: Container(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(5.0),
                 child: Column(
                   children: <Widget>[
                     Image.asset(
                       imageInfo[index]["imagePath"] ?? "",
-                      width: 120, // Ajusta el ancho de la imagen
-                      height: 90, // Ajusta la altura de la imagen
-                      fit: BoxFit
-                          .contain, // Ajusta el modo de ajuste de la imagen
+                      width: 120,
+                      height: 70,
+                      fit: BoxFit.contain,
                     ),
                     SizedBox(height: 10),
                     Text(
@@ -100,7 +108,9 @@ class Cursospage extends StatelessWidget {
                   ],
                 ),
               ),
-            ));
+            ),
+          ),
+        );
       },
     );
   }
