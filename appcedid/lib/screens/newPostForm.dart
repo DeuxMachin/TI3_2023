@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ti3/utils/database_service.dart'; // Importa el servicio de base de datos aquí
+import 'package:ti3/utils/database_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class NewPostForm extends StatefulWidget {
   @override
@@ -11,8 +13,32 @@ class _NewPostFormState extends State<NewPostForm> {
   String title = '';
   String subject = '';
   String body = '';
-  final db =
-      DatabaseService(); // Crea una instancia del servicio de base de datos aquí
+  String author = 'Anónimo'; // Valor por defecto
+  String userImg =
+      'https://cdn-icons-png.flaticon.com/512/149/149071.png'; // Valor por defecto
+  final db = DatabaseService();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentUser();
+  }
+
+  Future<void> _getCurrentUser() async {
+    User? currentUser = _auth.currentUser;
+    if (currentUser != null) {
+      GoogleSignInAccount? googleUser = await googleSignIn.signInSilently();
+      if (googleUser != null) {
+        setState(() {
+          author = googleUser.displayName ?? 'Anónimo';
+          userImg = googleUser.photoUrl ??
+              'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+        });
+      }
+    }
+  }
 
   InputDecoration _inputDecoration(String label) {
     return InputDecoration(
@@ -98,23 +124,20 @@ class _NewPostFormState extends State<NewPostForm> {
                     onPressed: () async {
                       if (_formKey.currentState?.validate() ?? false) {
                         _formKey.currentState?.save();
-                        // Aquí puedes manejar la lógica para guardar el post
-                        // Por ejemplo, puedes llamar a una función para guardar el post en una base de datos
                         await db.createPost(
-                            title,
-                            subject,
-                            body,
-                            'olaa',
-                            'https://cdn-icons-png.flaticon.com/512/149/149071.png',
-                            DateTime.now());
+                          title,
+                          subject,
+                          body,
+                          author,
+                          userImg,
+                          DateTime.now(),
+                        );
                         Navigator.pop(context);
                       }
                     },
                     icon: Icon(Icons.send),
                     label: Text('Enviar'),
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.blue,
-                      onPrimary: Colors.white,
                       padding:
                           EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                       shape: RoundedRectangleBorder(
