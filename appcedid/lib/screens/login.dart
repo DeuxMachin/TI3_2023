@@ -1,29 +1,26 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Importar Firestore
-import 'package:ti3/main.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ti3/screens/HomeSi.dart';
 import 'package:ti3/utils/authentication.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ti3/main.dart';
+
+// Variable global para almacenar el email del usuario
+String? userEmail;
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> with RouteAware {
-  bool rememberMe = false;
-
-  // Controladores para los campos de texto
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  @override
-  void dispose() {
-    // Limpiar los controladores cuando la pantalla se descarte
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
+  late Color myColor;
+  late Size mediaSize;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  bool rememberUser = false;
 
   @override
   void didChangeDependencies() {
@@ -40,166 +37,194 @@ class _LoginScreenState extends State<LoginScreen> with RouteAware {
     });
   }
 
-  // Función para iniciar sesión
-  Future<void> login() async {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
-
-    final usersRef = FirebaseFirestore.instance.collection('Usuarios');
-    final userSnapshot = await usersRef
-        .where('email', isEqualTo: email)
-        .where('Clave', isEqualTo: password)
-        .get();
-
-    if (userSnapshot.docs.isNotEmpty) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Hablar con soporte')));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false, //Remove back arrow
-        iconTheme: IconThemeData(color: Colors.black),
-        backgroundColor: Color.fromARGB(255, 235, 250, 151),
-        title: Text('Ingresar a Cuenta', style: TextStyle(color: Colors.black)),
-      ),
-      body: Material(
-        color: Color.fromARGB(255, 174, 243, 242),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 25),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset("assets/Icon_login_fondo.jpg"),
-              SingleChildScrollView(
-                child: Flexible(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color:
-                          Color.fromARGB(255, 174, 243, 242).withOpacity(0.6),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: TextFormField(
-                        controller: _emailController, // Añadido controlador
-                        decoration: InputDecoration(
-                          hintText: "Correo Electronico",
-                          prefixIcon: Icon(
-                            Icons.email,
-                            color: Colors.black.withOpacity(0.5),
-                          ),
-                        ),
-                        cursorColor: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                height: 60,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 174, 243, 242).withOpacity(0.6),
-                    borderRadius: BorderRadius.circular(10)),
-                child: Center(
-                  child: TextFormField(
-                    controller: _passwordController, // Añadido controlador
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      hintText: "Contraseña",
-                      prefixIcon: Icon(Icons.lock,
-                          color: Colors.black.withOpacity(0.5)),
-                      suffixIcon: Icon(
-                        Icons.remove_red_eye_outlined,
-                        color: Colors.black.withOpacity(0.5),
-                      ),
-                    ),
-                    cursorColor: Colors.black,
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              InkWell(
-                onTap: login, // Vinculado la función de inicio de sesión
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  height: 60,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 235, 250, 151),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "Iniciar Sesión",
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        wordSpacing: 2,
-                        color: Colors.black54,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              // (Resto del código no se modifica)
-              InkWell(
-                onTap: () async {
-                  User? user =
-                      await Authentication.signInWithGoogle(context: context);
-                  if (user != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
-                  }
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  height: 60,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 235, 250, 151),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Image.asset(
-                          "assets/google.png",
-                          height: 24.0,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          "Iniciar con Google",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            wordSpacing: 2,
-                            color: Colors.black54,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+    myColor = Theme.of(context).primaryColor;
+    mediaSize = MediaQuery.of(context).size;
+    return Container(
+      decoration: BoxDecoration(
+        color: myColor,
+        image: DecorationImage(
+          image: const AssetImage("assets/campus.jpg"),
+          fit: BoxFit.cover,
+          colorFilter:
+              ColorFilter.mode(myColor.withOpacity(0.2), BlendMode.dstATop),
         ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(children: [
+          Positioned(top: 80, child: _buildTop()),
+          Positioned(bottom: 0, child: _buildBottom()),
+        ]),
+      ),
+    );
+  }
+
+  Widget _buildTop() {
+    return SizedBox(
+      width: mediaSize.width,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset(
+            "assets/Logo_UCT.png",
+            height: 100.0, // puedes ajustar esto según lo necesites
+            width: 100.0, // puedes ajustar esto según lo necesites
+          ),
+          Text(
+            "CINAP",
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 35,
+                letterSpacing: 2),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottom() {
+    return SizedBox(
+      width: mediaSize.width,
+      child: Card(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        )),
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: _buildForm(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildForm() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Bienvenido",
+          style: TextStyle(
+              color: myColor, fontSize: 32, fontWeight: FontWeight.w500),
+        ),
+        _buildGreyText("Por favor utilizar informacion institucional"),
+        const SizedBox(height: 60),
+        _buildGreyText("Correo Electronico"),
+        _buildInputField(emailController),
+        const SizedBox(height: 40),
+        _buildGreyText("Contraseña"),
+        _buildInputField(passwordController, isPassword: true),
+        const SizedBox(height: 20),
+        _buildRememberForgot(),
+        const SizedBox(height: 20),
+        _buildLoginButton(),
+        const SizedBox(height: 20),
+        _buildOtherLogin(),
+      ],
+    );
+  }
+
+  Widget _buildGreyText(String text) {
+    return Text(
+      text,
+      style: const TextStyle(color: Colors.grey),
+    );
+  }
+
+  Widget _buildInputField(TextEditingController controller,
+      {isPassword = false}) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        suffixIcon: isPassword ? Icon(Icons.remove_red_eye) : Icon(Icons.done),
+      ),
+      obscureText: isPassword,
+    );
+  }
+
+  Widget _buildRememberForgot() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Checkbox(
+                value: rememberUser,
+                onChanged: (value) {
+                  setState(() {
+                    rememberUser = value!;
+                  });
+                }),
+            _buildGreyText("Recuerdame"),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget customElevatedButton(
+      {required Function() onPressed,
+      required String buttonText,
+      Widget? leadingWidget}) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        shape: const StadiumBorder(),
+        elevation: 20,
+        shadowColor: myColor,
+        minimumSize: const Size.fromHeight(60),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (leadingWidget != null) leadingWidget,
+          if (leadingWidget != null) SizedBox(width: 10),
+          Text(buttonText),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoginButton() {
+    return customElevatedButton(
+      onPressed: () async {
+        String email = emailController.text;
+        String password = passwordController.text;
+
+        QuerySnapshot users = await FirebaseFirestore.instance
+            .collection('Usuarios')
+            .where('email', isEqualTo: email)
+            .where('Clave', isEqualTo: password)
+            .get();
+
+        if (users.docs.isNotEmpty) {
+          userEmail = email; // Guardar el email del usuario
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => HomePage()));
+        } else {}
+      },
+      buttonText: "LOGIN",
+    );
+  }
+
+  Widget _buildOtherLogin() {
+    return customElevatedButton(
+      onPressed: () async {
+        User? user = await Authentication.signInWithGoogle(context: context);
+        if (user != null) {
+          userEmail = user.email; // Guardar el email del usuario de Google
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => HomePage()));
+        }
+      },
+      buttonText: "Iniciar con Google",
+      leadingWidget: Image.asset(
+        "assets/google.png",
+        height: 24.0,
       ),
     );
   }

@@ -2,11 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ti3/main.dart';
-import 'package:ti3/screens/HomeSi.dart';
 import 'newPostForm.dart';
 import 'post.dart';
 import 'respuestaForo.dart';
+import 'package:ti3/main.dart';
+import 'package:ti3/screens/HomeSi.dart';
 
 class ForoPage extends StatefulWidget {
   @override
@@ -15,6 +15,7 @@ class ForoPage extends StatefulWidget {
 
 class _ForoPageState extends State<ForoPage> with RouteAware {
   int currentIndex = 4;
+
   final Stream<QuerySnapshot> _postsStream =
       FirebaseFirestore.instance.collection('posts').snapshots();
 
@@ -37,7 +38,6 @@ class _ForoPageState extends State<ForoPage> with RouteAware {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, //Remove back arrow
         title: Text('Foro de consultas', style: TextStyle(color: Colors.black)),
         backgroundColor: Color.fromARGB(255, 235, 250, 151),
         iconTheme: IconThemeData(color: Colors.black),

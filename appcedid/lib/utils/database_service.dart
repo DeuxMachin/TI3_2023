@@ -14,6 +14,7 @@ class DatabaseService {
       'userImg': userImg,
       'time': time,
       'likes': 0,
+      'userLikes': [],
     });
   }
 
@@ -30,15 +31,17 @@ class DatabaseService {
     return postCollection.doc(id).delete();
   }
 
-  Future<void> likePost(String id, String userId) {
-    return postCollection.doc(id).update({
-      'likes': FieldValue.arrayUnion([userId]),
+  Future<void> likePost(String postId, String userId) {
+    return postCollection.doc(postId).update({
+      'likes': FieldValue.increment(1),
+      'userLikes': FieldValue.arrayUnion([userId]),
     });
   }
 
-  Future<void> unlikePost(String id, String userId) {
-    return postCollection.doc(id).update({
-      'likes': FieldValue.arrayRemove([userId]),
+  Future<void> unlikePost(String postId, String userId) {
+    return postCollection.doc(postId).update({
+      'likes': FieldValue.increment(-1),
+      'userLikes': FieldValue.arrayRemove([userId]),
     });
   }
 }

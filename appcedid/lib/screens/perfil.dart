@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ti3/screens/login.dart';
+
 import 'package:ti3/main.dart';
 import 'package:ti3/screens/HomeSi.dart';
 
@@ -43,7 +45,7 @@ class _PerfilPageState extends State<PerfilPage> with RouteAware {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, //Remove back arrow
+        automaticallyImplyLeading: false,
         title:
             Text('Perfil del Docente', style: TextStyle(color: Colors.black)),
         backgroundColor: Color.fromARGB(255, 235, 250, 151),
@@ -73,7 +75,7 @@ class _PerfilPageState extends State<PerfilPage> with RouteAware {
                   color: Colors.teal,
                 ),
                 title: Text(
-                  loggedInUser?.email ?? 'Cargando...',
+                  userEmail ?? 'Cargando...', // Usar userEmail aquí
                   style: TextStyle(
                     fontSize: 20.0,
                     color: Colors.teal.shade900,
