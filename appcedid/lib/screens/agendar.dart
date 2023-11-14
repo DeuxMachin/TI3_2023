@@ -5,8 +5,10 @@ import 'package:googleapis/calendar/v3.dart' as gcal;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ti3/main.dart';
 import 'package:ti3/screens/showmeetings.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'HomeSi.dart';
 
 // ignore: must_be_immutable
 class AgendarPage extends StatefulWidget {
@@ -14,8 +16,10 @@ class AgendarPage extends StatefulWidget {
   _AgendarPageState createState() => _AgendarPageState();
 }
 
-class _AgendarPageState extends State<AgendarPage> {
+class _AgendarPageState extends State<AgendarPage> with RouteAware {
   Map<String, dynamic>? selectedAsesor;
+  late ScrollController _scrollController;
+  int currentIndex = 1;
 
   Future<List<Map<String, dynamic>>> fetchAsesores() async {
     final CollectionReference asesores =
@@ -33,9 +37,23 @@ class _AgendarPageState extends State<AgendarPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, //Remove back arrow
         backgroundColor: Color.fromARGB(255, 235, 250, 151),
         title: Text('Agendar Hora', style: TextStyle(color: Colors.black)),
         iconTheme: IconThemeData(color: Colors.black),
@@ -126,9 +144,33 @@ class _AgendarPageState extends State<AgendarPage> {
                                   selectedAsesor = asesores[index];
                                 });
                               },
-                              child: Chip(
-                                label: Text(
-                                    '${asesores[index]['Nombre']} ${asesores[index]['Apellidos']}'),
+                              child: Container(
+                                padding: EdgeInsets.all(4.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  color: Colors.grey,
+                                ),
+                                child: Center(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          '${asesores[index]['Nombre']} ${asesores[index]['Apellidos']}',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             );
                           },
@@ -147,15 +189,20 @@ class _AgendarPageState extends State<AgendarPage> {
                 children: <Widget>[
                   // List of dates with time
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: selectedAsesor != null
-                          ? selectedAsesor!['Dates'].length
-                          : 0,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(selectedAsesor!['Dates'][index]),
-                        );
-                      },
+                    child: Scrollbar(
+                      thumbVisibility: true,
+                      controller: _scrollController,
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        itemCount: selectedAsesor != null
+                            ? selectedAsesor!['Dates'].length
+                            : 0,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(selectedAsesor!['Dates'][index]),
+                          );
+                        },
+                      ),
                     ),
                   ),
                   // Button
@@ -188,7 +235,52 @@ class _AgendarPageState extends State<AgendarPage> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        showUnselectedLabels: true,
+        iconSize: 32,
+        selectedItemColor: Colors.purple,
+        selectedFontSize: 18,
+        unselectedItemColor: Colors.grey,
+        currentIndex: currentIndex, // Establece el índice actual
+        onTap: (index) {
+          // Verifica si el índice está dentro del rango válido
+          if (index >= 0 && index < pages.length) {
+            // Cambia de página al tocar un ícono en el BottomNavigationBar
+            setState(() {
+              currentIndex = index;
+            });
+
+            // Navega a la página correspondiente utilizando Navigator
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => pages[currentIndex]),
+            );
+          }
+        },
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Agendar'),
+          BottomNavigationBarItem(icon: Icon(Icons.flutter_dash), label: 'Bot'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Cuenta'),
+          BottomNavigationBarItem(icon: Icon(Icons.forum), label: 'Foro'),
+        ],
+      ),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    // User swiped back to this page, so we update the currentIndex
+    setState(() {
+      currentIndex = 1;
+    });
   }
 }
 
@@ -204,6 +296,7 @@ class PagCalendario extends StatefulWidget {
 }
 
 class _PagCalendarioState extends State<PagCalendario> {
+  int currentIndex = 1;
   DateTime? _selectedDay;
   TimeOfDay? _selectedTime;
   Duration? _duration;
@@ -237,23 +330,31 @@ class _PagCalendarioState extends State<PagCalendario> {
         .where('end', isGreaterThanOrEqualTo: start.toIso8601String())
         .get();
 
-    // Combine the results of the two queries
+    // Query for events that have a certain asesor's correo
+    QuerySnapshot querySnapshot3 = await FirebaseFirestore.instance
+        .collection('reunion')
+        .where('asesorCorreo', isEqualTo: widget.correo)
+        .get();
+
+    // Combine the results of the three queries
     List<QueryDocumentSnapshot> combinedQuery = [];
     combinedQuery.addAll(querySnapshot1.docs);
     combinedQuery.addAll(querySnapshot2.docs);
+    combinedQuery.addAll(querySnapshot3.docs);
 
     // Check if any of the combined results overlap with the new event
     for (var doc in combinedQuery) {
       DateTime eventStart = DateTime.parse(doc['start']);
       DateTime eventEnd = DateTime.parse(doc['end']);
-
-      if ((start.isAfter(eventStart) && start.isBefore(eventEnd)) ||
-          (end.isAfter(eventStart) && end.isBefore(eventEnd)) ||
-          (start.isAtSameMomentAs(eventStart) &&
-              end.isAtSameMomentAs(eventEnd)) ||
-          (start.isAtSameMomentAs(eventStart) && end.isAfter(eventStart)) ||
-          (start.isBefore(eventEnd) && end.isAtSameMomentAs(eventEnd))) {
-        return true;
+      if (widget.correo == doc['asesorCorreo']) {
+        if ((start.isAfter(eventStart) && start.isBefore(eventEnd)) ||
+            (end.isAfter(eventStart) && end.isBefore(eventEnd)) ||
+            (start.isAtSameMomentAs(eventStart) &&
+                end.isAtSameMomentAs(eventEnd)) ||
+            (start.isAtSameMomentAs(eventStart) && end.isAfter(eventStart)) ||
+            (start.isBefore(eventEnd) && end.isAtSameMomentAs(eventEnd))) {
+          return true;
+        }
       }
     }
 
@@ -426,9 +527,9 @@ class _PagCalendarioState extends State<PagCalendario> {
                     ),
                     Text(
                       _selectedDay != null && _selectedTime != null
-                          ? 'Fecha seleccionada: ${_selectedDay!.day}/${_selectedDay!.month}/${_selectedDay!.year}\nHora de la reunión: ${_selectedTime!.hour}:${_selectedTime!.minute.toString().padLeft(2, '0')}\nDuración de la reunión: ${_duration?.inHours ?? 0} horas y ${_duration?.inMinutes.remainder(60) ?? 0} minutos'
+                          ? 'Fecha seleccionada: ${_selectedDay!.day}/${_selectedDay!.month}/${_selectedDay!.year}\nHora de la reunión: ${_selectedTime!.hour}:${_selectedTime!.minute.toString().padLeft(2, '0')}\nDuración: ${_duration?.inHours ?? 0} horas y ${_duration?.inMinutes.remainder(60) ?? 0} minutos'
                           : 'No se ha seleccionado ninguna fecha',
-                      style: TextStyle(fontSize: 24),
+                      style: TextStyle(fontSize: 22),
                     ),
                   ],
                 ),
@@ -446,7 +547,7 @@ class _PagCalendarioState extends State<PagCalendario> {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: Text('Error'),
-                        content: Text('No hay día o hora seleccionada'),
+                        content: Text('No hay día u hora seleccionada'),
                         actions: <Widget>[
                           TextButton(
                             child: Text('OK'),
@@ -505,10 +606,15 @@ class _PagCalendarioState extends State<PagCalendario> {
                     ..start = start
                     ..end = end;
 
+                  final sameDocuments = await firestore
+                      .collection('reunion')
+                      .where('summary', isEqualTo: event.summary)
+                      .get();
+
                   if (appointmentDateTime != null) {
                     bool isOverlap = await isOverlapping(appointmentDateTime!,
                         appointmentDateTime.add(_duration!));
-                    if (!isOverlap) {
+                    if (!isOverlap && (sameDocuments.size < 5)) {
                       // Add the event to Firestore
                       event.attendees = [
                         gcal.EventAttendee(
@@ -526,6 +632,7 @@ class _PagCalendarioState extends State<PagCalendario> {
                         'email': currentUser?.email,
                         'googleEventId': createdEvent
                             .id, // Use the ID from the created event
+                        'asesorCorreo': widget.correo,
                       });
 
                       // Show a message that the event was created successfully
@@ -547,14 +654,20 @@ class _PagCalendarioState extends State<PagCalendario> {
                         },
                       );
                     } else {
+                      String errormsg;
+                      if (sameDocuments.size < 5) {
+                        errormsg =
+                            'Hora ya reservada o asesor no disponible en ese horario.';
+                      } else {
+                        errormsg = 'El asesor ya posee 5 horas agendadas.';
+                      }
                       // Show a message that the event overlaps with an existing event
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: Text('Error'),
-                            content: Text(
-                                'Hora ya reservada o asesor no disponible en ese horario.'),
+                            content: Text(errormsg),
                             actions: <Widget>[
                               TextButton(
                                 child: Text('Continuar'),
