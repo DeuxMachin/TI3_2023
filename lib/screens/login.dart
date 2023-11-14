@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ti3/screens/HomeSi.dart';
 import 'package:ti3/utils/authentication.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ti3/main.dart';
 
 // Variable global para almacenar el email del usuario
 String? userEmail;
@@ -14,12 +15,27 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> with RouteAware {
   late Color myColor;
   late Size mediaSize;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool rememberUser = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    // User swiped back to this page, so we log them out
+    setState(() {
+      Authentication.logout();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,19 +111,13 @@ class _LoginScreenState extends State<LoginScreen> {
           style: TextStyle(
               color: myColor, fontSize: 32, fontWeight: FontWeight.w500),
         ),
-        _buildGreyText("Por favor utilizar informacion institucional"),
-        const SizedBox(height: 60),
-        _buildGreyText("Correo Electronico"),
-        _buildInputField(emailController),
-        const SizedBox(height: 40),
-        _buildGreyText("Contraseña"),
-        _buildInputField(passwordController, isPassword: true),
-        const SizedBox(height: 20),
-        _buildRememberForgot(),
-        const SizedBox(height: 20),
-        _buildLoginButton(),
-        const SizedBox(height: 20),
-        _buildOtherLogin(),
+        _buildGreyText(
+            "Por favor utilizar un correo institucional de la universidad. Esto se realiza para poder brindar mas seguridad a sus usuarios."),
+        const SizedBox(
+          height: 60,
+        ),
+        _buildOtherLogin(), // Mover el botón al inicio
+        const SizedBox(height: 200), // Mantener el espacio en la parte inferior
       ],
     );
   }
@@ -127,26 +137,6 @@ class _LoginScreenState extends State<LoginScreen> {
         suffixIcon: isPassword ? Icon(Icons.remove_red_eye) : Icon(Icons.done),
       ),
       obscureText: isPassword,
-    );
-  }
-
-  Widget _buildRememberForgot() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Checkbox(
-                value: rememberUser,
-                onChanged: (value) {
-                  setState(() {
-                    rememberUser = value!;
-                  });
-                }),
-            _buildGreyText("Recuerdame"),
-          ],
-        ),
-      ],
     );
   }
 
@@ -173,36 +163,30 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLoginButton() {
-    return customElevatedButton(
-      onPressed: () async {
-        String email = emailController.text;
-        String password = passwordController.text;
-
-        QuerySnapshot users = await FirebaseFirestore.instance
-            .collection('Usuarios')
-            .where('email', isEqualTo: email)
-            .where('Clave', isEqualTo: password)
-            .get();
-
-        if (users.docs.isNotEmpty) {
-          userEmail = email; // Guardar el email del usuario
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => HomePage()));
-        } else {}
-      },
-      buttonText: "LOGIN",
-    );
-  }
-
   Widget _buildOtherLogin() {
     return customElevatedButton(
       onPressed: () async {
-        User? user = await Authentication.signInWithGoogle(context: context);
-        if (user != null) {
-          userEmail = user.email; // Guardar el email del usuario de Google
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => HomePage()));
+        try {
+          User? user = await Authentication.signInWithGoogle(context: context);
+          if (user != null &&
+              user.email != null &&
+              user.email!.endsWith('@alu.uct.cl')) {
+            userEmail = user.email; // Guardar el email del usuario de Google
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => HomePage()));
+          } else {
+            // Si el dominio no es correcto, cerrar la sesión de Google y mostrar mensaje
+            await Authentication.logout();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                    'Solo se permite el acesso a correos institucionales, pertenecientes a la universidad catolica de temuco.'),
+              ),
+            );
+          }
+        } catch (e) {
+          // Manejar cualquier otro error que pueda ocurrir
+          print(e); // Considera mostrar un mensaje al usuario
         }
       },
       buttonText: "Iniciar con Google",

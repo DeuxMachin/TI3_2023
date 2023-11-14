@@ -31,7 +31,7 @@ List<Color> catColors = [
   const Color(0xFF6FE08D),
   const Color(0xFF61BDFD),
   const Color(0xFFFC7F7F),
-  const Color(0XFFCB84FB),
+  Color.fromARGB(255, 255, 255, 255),
   const Color(0XFF78E667),
 ];
 
@@ -41,7 +41,11 @@ List<Widget> catIcon = [
     width: 30, // Ancho de la imagen
     height: 30, // Alto de la imagen
   ),
-  const Icon(Icons.video_library, color: Colors.white, size: 30),
+  Image.asset(
+    'assets/portal.png', // Ruta de la imagen en la carpeta de assets
+    width: 80, // Ancho de la imagen
+    height: 80, // Alto de la imagen
+  ),
   Image.asset(
     'assets/directorio.png', // Ruta de la imagen en la carpeta de assets
     width: 50, // Ancho de la imagen
@@ -52,7 +56,11 @@ List<Widget> catIcon = [
     width: 30, // Ancho de la imagen
     height: 30, // Alto de la imagen
   ),
-  const Icon(Icons.calendar_month, color: Colors.white, size: 30),
+  Image.asset(
+    'assets/calendario.png', // Ruta de la imagen en la carpeta de assets
+    width: 90, // Ancho de la imagen
+    height: 90, // Alto de la imagen
+  ),
   Image.asset(
     'assets/Logo_UCT.png', // Ruta de la imagen en la carpeta de assets
     width: 30, // Ancho de la imagen
@@ -100,7 +108,7 @@ class _HomePageState extends State<HomePage> {
   int currentIndex = 0;
   List imgList = [
     'Virtualiza',
-    'ModeloEducativoInstitucional',
+    'mei',
     'DocenciaOnline',
     'IntroduccionaEducaBlackboard',
     'ImpulsaTuRed',
@@ -109,9 +117,9 @@ class _HomePageState extends State<HomePage> {
 
   List nameList = [
     'Virtualiza',
-    'MEI',
-    'Docencia Online',
-    'Educa Blackboard',
+    'Modelo institucional',
+    'Docencia online',
+    'Educa blackboard',
     'Impulsa Tu Red',
     'HyFlex',
   ];
@@ -142,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     IconButton(
                       icon: Icon(
-                        Icons.account_circle,
+                        Icons.logout,
                         size: 30,
                         color: Colors.white,
                       ),
@@ -153,6 +161,8 @@ class _HomePageState extends State<HomePage> {
                           MaterialPageRoute(
                               builder: (context) => LoginScreen()),
                         );
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            '/login', (Route<dynamic> route) => false);
                       },
                     ),
                   ],
@@ -185,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                       border: InputBorder.none,
                       hintText: "Busca aqui...",
                       hintStyle: TextStyle(
-                        color: Color.fromARGB(255, 133, 132, 132),
+                        color: Color.fromARGB(255, 133, 133, 132),
                       ),
                       prefixIcon: Icon(
                         Icons.search,

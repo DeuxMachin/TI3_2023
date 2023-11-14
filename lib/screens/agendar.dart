@@ -5,6 +5,10 @@ import 'package:googleapis/calendar/v3.dart' as gcal;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ti3/main.dart';
+import 'package:ti3/screens/showmeetings.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'HomeSi.dart';
 
 // ignore: must_be_immutable
 class AgendarPage extends StatefulWidget {
@@ -12,8 +16,10 @@ class AgendarPage extends StatefulWidget {
   _AgendarPageState createState() => _AgendarPageState();
 }
 
-class _AgendarPageState extends State<AgendarPage> {
+class _AgendarPageState extends State<AgendarPage> with RouteAware {
   Map<String, dynamic>? selectedAsesor;
+  late ScrollController _scrollController;
+  int currentIndex = 1;
 
   Future<List<Map<String, dynamic>>> fetchAsesores() async {
     final CollectionReference asesores =
@@ -31,12 +37,43 @@ class _AgendarPageState extends State<AgendarPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, //Remove back arrow
         backgroundColor: Color.fromARGB(255, 235, 250, 151),
         title: Text('Agendar Hora', style: TextStyle(color: Colors.black)),
         iconTheme: IconThemeData(color: Colors.black),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MeetingsPage()),
+              );
+            },
+            child: Row(
+              children: [
+                Icon(Icons.calendar_today),
+                SizedBox(width: 4), //Space between text and icon
+                Text('Reuniones'),
+              ],
+            ),
+          ),
+        ],
       ),
       body: Container(
         margin: EdgeInsets.all(10.0),
@@ -44,10 +81,16 @@ class _AgendarPageState extends State<AgendarPage> {
           children: <Widget>[
             // Top section
             Expanded(
-              flex: 2,
+              flex: 3,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  CircleAvatar(
+                    radius: 100,
+                    backgroundImage: NetworkImage(
+                        'https://cdn.britannica.com/85/205685-050-24677990/Ryan-Reynolds-2011.jpg'),
+                  ),
+                  SizedBox(height: 10),
                   Text(
                     selectedAsesor != null
                         ? '${selectedAsesor!['Nombre']} ${selectedAsesor!['Apellidos']}'
@@ -65,7 +108,7 @@ class _AgendarPageState extends State<AgendarPage> {
             Divider(),
             // Middle section
             Expanded(
-              flex: 3,
+              flex: 2,
               child: FutureBuilder<List<Map<String, dynamic>>>(
                 future: fetchAsesores(),
                 builder: (context, snapshot) {
@@ -101,9 +144,33 @@ class _AgendarPageState extends State<AgendarPage> {
                                   selectedAsesor = asesores[index];
                                 });
                               },
-                              child: Chip(
-                                label: Text(
-                                    '${asesores[index]['Nombre']} ${asesores[index]['Apellidos']}'),
+                              child: Container(
+                                padding: EdgeInsets.all(4.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  color: Colors.grey,
+                                ),
+                                child: Center(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          '${asesores[index]['Nombre']} ${asesores[index]['Apellidos']}',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             );
                           },
@@ -122,15 +189,20 @@ class _AgendarPageState extends State<AgendarPage> {
                 children: <Widget>[
                   // List of dates with time
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: selectedAsesor != null
-                          ? selectedAsesor!['Dates'].length
-                          : 0,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(selectedAsesor!['Dates'][index]),
-                        );
-                      },
+                    child: Scrollbar(
+                      thumbVisibility: true,
+                      controller: _scrollController,
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        itemCount: selectedAsesor != null
+                            ? selectedAsesor!['Dates'].length
+                            : 0,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(selectedAsesor!['Dates'][index]),
+                          );
+                        },
+                      ),
                     ),
                   ),
                   // Button
@@ -163,7 +235,52 @@ class _AgendarPageState extends State<AgendarPage> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        showUnselectedLabels: true,
+        iconSize: 32,
+        selectedItemColor: Colors.purple,
+        selectedFontSize: 18,
+        unselectedItemColor: Colors.grey,
+        currentIndex: currentIndex, // Establece el índice actual
+        onTap: (index) {
+          // Verifica si el índice está dentro del rango válido
+          if (index >= 0 && index < pages.length) {
+            // Cambia de página al tocar un ícono en el BottomNavigationBar
+            setState(() {
+              currentIndex = index;
+            });
+
+            // Navega a la página correspondiente utilizando Navigator
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => pages[currentIndex]),
+            );
+          }
+        },
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Agendar'),
+          BottomNavigationBarItem(icon: Icon(Icons.flutter_dash), label: 'Bot'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Cuenta'),
+          BottomNavigationBarItem(icon: Icon(Icons.forum), label: 'Foro'),
+        ],
+      ),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    // User swiped back to this page, so we update the currentIndex
+    setState(() {
+      currentIndex = 1;
+    });
   }
 }
 
@@ -179,8 +296,10 @@ class PagCalendario extends StatefulWidget {
 }
 
 class _PagCalendarioState extends State<PagCalendario> {
-  DateTime? _date;
-  Duration _duration = Duration(minutes: 15);
+  int currentIndex = 1;
+  DateTime? _selectedDay;
+  TimeOfDay? _selectedTime;
+  Duration? _duration;
   final currentUser = FirebaseAuth.instance.currentUser;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn(
@@ -211,23 +330,31 @@ class _PagCalendarioState extends State<PagCalendario> {
         .where('end', isGreaterThanOrEqualTo: start.toIso8601String())
         .get();
 
-    // Combine the results of the two queries
+    // Query for events that have a certain asesor's correo
+    QuerySnapshot querySnapshot3 = await FirebaseFirestore.instance
+        .collection('reunion')
+        .where('asesorCorreo', isEqualTo: widget.correo)
+        .get();
+
+    // Combine the results of the three queries
     List<QueryDocumentSnapshot> combinedQuery = [];
     combinedQuery.addAll(querySnapshot1.docs);
     combinedQuery.addAll(querySnapshot2.docs);
+    combinedQuery.addAll(querySnapshot3.docs);
 
     // Check if any of the combined results overlap with the new event
     for (var doc in combinedQuery) {
       DateTime eventStart = DateTime.parse(doc['start']);
       DateTime eventEnd = DateTime.parse(doc['end']);
-
-      if ((start.isAfter(eventStart) && start.isBefore(eventEnd)) ||
-          (end.isAfter(eventStart) && end.isBefore(eventEnd)) ||
-          (start.isAtSameMomentAs(eventStart) &&
-              end.isAtSameMomentAs(eventEnd)) ||
-          (start.isAtSameMomentAs(eventStart) && end.isAfter(eventStart)) ||
-          (start.isBefore(eventEnd) && end.isAtSameMomentAs(eventEnd))) {
-        return true;
+      if (widget.correo == doc['asesorCorreo']) {
+        if ((start.isAfter(eventStart) && start.isBefore(eventEnd)) ||
+            (end.isAfter(eventStart) && end.isBefore(eventEnd)) ||
+            (start.isAtSameMomentAs(eventStart) &&
+                end.isAtSameMomentAs(eventEnd)) ||
+            (start.isAtSameMomentAs(eventStart) && end.isAfter(eventStart)) ||
+            (start.isBefore(eventEnd) && end.isAtSameMomentAs(eventEnd))) {
+          return true;
+        }
       }
     }
 
@@ -301,9 +428,10 @@ class _PagCalendarioState extends State<PagCalendario> {
           children: <Widget>[
             // Top section
             Expanded(
-              flex: 2,
+              flex: 0,
               child: Column(
                 children: [
+                  SizedBox(height: 10),
                   Text(
                     'Reunirse con ${widget.nombre} ${widget.apellidos}',
                     style: TextStyle(fontSize: 24),
@@ -314,45 +442,46 @@ class _PagCalendarioState extends State<PagCalendario> {
             Divider(),
             // Middle section
             Expanded(
-              flex: 3,
-              child: Container(
-                color: Colors.blue, // Placeholder for the calendar
-                child: Center(
-                  child: Container(
-                    width: 200.0, // Set your desired width
-                    height: 50.0, // Set your desired height
-                    child: TextButton(
-                      onPressed: () async {
-                        final date = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2022, 1, 1),
-                          lastDate: DateTime(2023, 12, 31),
-                        );
-                        if (date != null) {
-                          final time = await showTimePicker(
-                            context: context,
-                            initialTime: TimeOfDay.now(),
+              flex: 5,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    TableCalendar(
+                      firstDay: DateTime.utc(2010, 10, 16),
+                      lastDay: DateTime.utc(2030, 3, 14),
+                      focusedDay: _selectedDay ?? DateTime.now(),
+                      selectedDayPredicate: (day) {
+                        return isSameDay(_selectedDay, day);
+                      },
+                      onDaySelected: (selectedDay, focusedDay) {
+                        if (selectedDay.isBefore(DateTime.now())) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text(
+                                    'No puedes seleccionar un día pasado')),
                           );
-                          if (time != null) {
-                            setState(() {
-                              _date = DateTime(
-                                date.year,
-                                date.month,
-                                date.day,
-                                time.hour,
-                                time.minute,
-                              );
-                            });
-                          }
+                          return; // Do not update state if selected day is before today
+                        }
+                        setState(() {
+                          _selectedDay = selectedDay;
+                        });
+                      },
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        final TimeOfDay? pickedTime = await showTimePicker(
+                          context: context,
+                          initialTime: _selectedTime ?? TimeOfDay.now(),
+                        );
+                        if (pickedTime != null && pickedTime != _selectedTime) {
+                          setState(() {
+                            _selectedTime = pickedTime;
+                          });
                         }
                       },
-                      child: Text(
-                        'Seleccionar Fecha y Hora',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      child: Text('Seleccionar Hora'),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -360,132 +489,196 @@ class _PagCalendarioState extends State<PagCalendario> {
             // Bottom section
             Expanded(
               flex: 2,
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    '¿Cuánto tiempo necesitará?',
-                    style: TextStyle(fontSize: 24),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _duration = Duration(minutes: 15);
-                          });
-                        },
-                        child: Text('15 minutos'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _duration = Duration(minutes: 30);
-                          });
-                        },
-                        child: Text('30 minutos'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _duration = Duration(hours: 1);
-                          });
-                        },
-                        child: Text('1 hora'),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    _date != null
-                        ? 'Fecha seleccionada: $_date Duración de la reunión: $_duration'
-                        : 'No se ha seleccionado ninguna fecha',
-                    style: TextStyle(fontSize: 24),
-                  ),
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      '¿Cuánto tiempo necesitará?',
+                      style: TextStyle(fontSize: 24),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _duration = Duration(minutes: 15);
+                            });
+                          },
+                          child: Text('15 minutos'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _duration = Duration(minutes: 30);
+                            });
+                          },
+                          child: Text('30 minutos'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _duration = Duration(hours: 1);
+                            });
+                          },
+                          child: Text('1 hora'),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      _selectedDay != null && _selectedTime != null
+                          ? 'Fecha seleccionada: ${_selectedDay!.day}/${_selectedDay!.month}/${_selectedDay!.year}\nHora de la reunión: ${_selectedTime!.hour}:${_selectedTime!.minute.toString().padLeft(2, '0')}\nDuración: ${_duration?.inHours ?? 0} horas y ${_duration?.inMinutes.remainder(60) ?? 0} minutos'
+                          : 'No se ha seleccionado ninguna fecha',
+                      style: TextStyle(fontSize: 22),
+                    ),
+                  ],
+                ),
               ),
             ),
             Divider(),
             // Button
             ElevatedButton(
               onPressed: () async {
-                if (_date != null) {
-                  final GoogleSignInAccount? googleUser =
-                      await googleSignIn.signIn();
+                if (_selectedDay == null ||
+                    _selectedTime == null ||
+                    _duration == null) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Error'),
+                        content: Text('No hay día u hora seleccionada'),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text('OK'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  return;
+                }
+                DateTime appointmentDateTime = DateTime(
+                  _selectedDay!.year,
+                  _selectedDay!.month,
+                  _selectedDay!.day,
+                  _selectedTime!.hour,
+                  _selectedTime!.minute,
+                );
+                final GoogleSignInAccount? googleUser =
+                    await googleSignIn.signIn();
 
-                  if (googleUser != null) {
-                    final GoogleSignInAuthentication googleAuth =
-                        await googleUser.authentication;
+                if (googleUser != null) {
+                  final GoogleSignInAuthentication googleAuth =
+                      await googleUser.authentication;
 
-                    final http.Client httpClient = http.Client();
-                    final accessToken = googleAuth.accessToken;
-                    final idToken = googleAuth.idToken;
-                    final expiryTime = DateTime.now()
-                        .add(Duration(hours: 1))
-                        .toUtc(); // Set expiry time
-                    final scopes = <String>[
-                      'https://www.googleapis.com/auth/calendar'
-                    ]; // Set scopes
-                    final credentials = googleapis_auth.AccessCredentials(
-                      googleapis_auth.AccessToken(
-                          'Bearer', accessToken!, expiryTime),
-                      idToken,
-                      scopes,
-                    );
-                    final authenticatedClient = googleapis_auth
-                        .authenticatedClient(httpClient, credentials);
+                  final http.Client httpClient = http.Client();
+                  final accessToken = googleAuth.accessToken;
+                  final idToken = googleAuth.idToken;
+                  final expiryTime = DateTime.now()
+                      .add(Duration(hours: 1))
+                      .toUtc(); // Set expiry time
+                  final scopes = <String>[
+                    'https://www.googleapis.com/auth/calendar'
+                  ]; // Set scopes
+                  final credentials = googleapis_auth.AccessCredentials(
+                    googleapis_auth.AccessToken(
+                        'Bearer', accessToken!, expiryTime),
+                    idToken,
+                    scopes,
+                  );
+                  final authenticatedClient = googleapis_auth
+                      .authenticatedClient(httpClient, credentials);
 
-                    final start = gcal.EventDateTime()
-                      ..dateTime = _date
-                      ..timeZone = 'America/Santiago';
-                    final end = gcal.EventDateTime()
-                      ..dateTime = _date!.add(_duration)
-                      ..timeZone = 'America/Santiago';
-                    final calendar = gcal.CalendarApi(authenticatedClient);
-                    final event = gcal.Event()
-                      ..summary =
-                          'Reunión con ${widget.nombre} ${widget.apellidos}'
-                      ..start = start
-                      ..end = end;
+                  final start = gcal.EventDateTime()
+                    ..dateTime = appointmentDateTime
+                    ..timeZone = 'America/Santiago';
+                  final end = gcal.EventDateTime()
+                    ..dateTime = appointmentDateTime.add(_duration!)
+                    ..timeZone = 'America/Santiago';
+                  final calendar = gcal.CalendarApi(authenticatedClient);
+                  final event = gcal.Event()
+                    ..summary =
+                        'Reunión con ${widget.nombre} ${widget.apellidos}'
+                    ..start = start
+                    ..end = end;
 
-                    if (_date != null) {
-                      bool isOverlap =
-                          await isOverlapping(_date!, _date!.add(_duration));
-                      if (!isOverlap) {
-                        // Add the event to Firestore
-                        event.attendees = [
-                          gcal.EventAttendee(
-                              email: widget
-                                  .correo), // Add the asesor's email as an attendee
-                        ];
-                        await calendar.events.insert(event, 'primary');
+                  final sameDocuments = await firestore
+                      .collection('reunion')
+                      .where('summary', isEqualTo: event.summary)
+                      .get();
 
-                        // After successful insertion, add the event to Firestore
-                        await firestore.collection('reunion').add({
-                          'summary': event.summary,
-                          'start': event.start!.dateTime!.toIso8601String(),
-                          'end': event.end!.dateTime!.toIso8601String(),
-                        });
+                  if (appointmentDateTime != null) {
+                    bool isOverlap = await isOverlapping(appointmentDateTime!,
+                        appointmentDateTime.add(_duration!));
+                    if (!isOverlap && (sameDocuments.size < 5)) {
+                      // Add the event to Firestore
+                      event.attendees = [
+                        gcal.EventAttendee(
+                            email: widget
+                                .correo), // Add the asesor's email as an attendee
+                      ];
+                      gcal.Event createdEvent =
+                          await calendar.events.insert(event, 'primary');
+
+                      // After successful insertion, add the event to Firestore
+                      await firestore.collection('reunion').add({
+                        'summary': createdEvent.summary,
+                        'start': event.start!.dateTime!.toIso8601String(),
+                        'end': event.end!.dateTime!.toIso8601String(),
+                        'email': currentUser?.email,
+                        'googleEventId': createdEvent
+                            .id, // Use the ID from the created event
+                        'asesorCorreo': widget.correo,
+                      });
+
+                      // Show a message that the event was created successfully
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Raunión agendada'),
+                            content: Text('Hora reservada correctamente.'),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text('Continuar'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    } else {
+                      String errormsg;
+                      if (sameDocuments.size < 5) {
+                        errormsg =
+                            'Hora ya reservada o asesor no disponible en ese horario.';
                       } else {
-                        // Show a message that the event overlaps with an existing event
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Error'),
-                              content: Text(
-                                  'Hora ya reservada o asesor no disponible en ese horario.'),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: Text('Continuar'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
+                        errormsg = 'El asesor ya posee 5 horas agendadas.';
                       }
+                      // Show a message that the event overlaps with an existing event
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Error'),
+                            content: Text(errormsg),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text('Continuar'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     }
                   }
                 }
