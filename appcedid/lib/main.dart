@@ -6,15 +6,16 @@ import 'package:ti3/screens/chatbot.dart';
 import 'package:ti3/screens/perfil.dart';
 import 'package:ti3/screens/foro.dart';
 import 'package:ti3/screens/cursos.dart';
+import 'package:ti3/screens/showmeetings.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
-
-final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         '/Perfil': (context) => PerfilPage(),
         '/Foro': (context) => ForoPage(),
         '/Cursos': (context) => Cursospage(),
+        '/Reuniones': (context) => MeetingsPage(),
       },
     );
   }

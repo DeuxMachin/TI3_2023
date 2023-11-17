@@ -6,7 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ti3/main.dart';
-import 'package:ti3/screens/Cursos/showmeetings.dart';
+import 'package:ti3/screens/showmeetings.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'HomeSi.dart';
 
@@ -183,13 +183,11 @@ class _AgendarPageState extends State<AgendarPage> with RouteAware {
             ),
             Divider(),
             // Bottom section
-
             Expanded(
               flex: 2,
               child: Column(
                 children: <Widget>[
                   // List of dates with time
-                  Text('Horarios Disponibles'),
                   Expanded(
                     child: Scrollbar(
                       thumbVisibility: true,
@@ -332,23 +330,31 @@ class _PagCalendarioState extends State<PagCalendario> {
         .where('end', isGreaterThanOrEqualTo: start.toIso8601String())
         .get();
 
-    // Combine the results of the two queries
+    // Query for events that have a certain asesor's correo
+    QuerySnapshot querySnapshot3 = await FirebaseFirestore.instance
+        .collection('reunion')
+        .where('asesorCorreo', isEqualTo: widget.correo)
+        .get();
+
+    // Combine the results of the three queries
     List<QueryDocumentSnapshot> combinedQuery = [];
     combinedQuery.addAll(querySnapshot1.docs);
     combinedQuery.addAll(querySnapshot2.docs);
+    combinedQuery.addAll(querySnapshot3.docs);
 
     // Check if any of the combined results overlap with the new event
     for (var doc in combinedQuery) {
       DateTime eventStart = DateTime.parse(doc['start']);
       DateTime eventEnd = DateTime.parse(doc['end']);
-
-      if ((start.isAfter(eventStart) && start.isBefore(eventEnd)) ||
-          (end.isAfter(eventStart) && end.isBefore(eventEnd)) ||
-          (start.isAtSameMomentAs(eventStart) &&
-              end.isAtSameMomentAs(eventEnd)) ||
-          (start.isAtSameMomentAs(eventStart) && end.isAfter(eventStart)) ||
-          (start.isBefore(eventEnd) && end.isAtSameMomentAs(eventEnd))) {
-        return true;
+      if (widget.correo == doc['asesorCorreo']) {
+        if ((start.isAfter(eventStart) && start.isBefore(eventEnd)) ||
+            (end.isAfter(eventStart) && end.isBefore(eventEnd)) ||
+            (start.isAtSameMomentAs(eventStart) &&
+                end.isAtSameMomentAs(eventEnd)) ||
+            (start.isAtSameMomentAs(eventStart) && end.isAfter(eventStart)) ||
+            (start.isBefore(eventEnd) && end.isAtSameMomentAs(eventEnd))) {
+          return true;
+        }
       }
     }
 
@@ -600,10 +606,15 @@ class _PagCalendarioState extends State<PagCalendario> {
                     ..start = start
                     ..end = end;
 
+                  final sameDocuments = await firestore
+                      .collection('reunion')
+                      .where('summary', isEqualTo: event.summary)
+                      .get();
+
                   if (appointmentDateTime != null) {
                     bool isOverlap = await isOverlapping(appointmentDateTime!,
                         appointmentDateTime.add(_duration!));
-                    if (!isOverlap) {
+                    if (!isOverlap && (sameDocuments.size < 5)) {
                       // Add the event to Firestore
                       event.attendees = [
                         gcal.EventAttendee(
@@ -621,6 +632,7 @@ class _PagCalendarioState extends State<PagCalendario> {
                         'email': currentUser?.email,
                         'googleEventId': createdEvent
                             .id, // Use the ID from the created event
+                        'asesorCorreo': widget.correo,
                       });
 
                       // Show a message that the event was created successfully
@@ -642,14 +654,20 @@ class _PagCalendarioState extends State<PagCalendario> {
                         },
                       );
                     } else {
+                      String errormsg;
+                      if (sameDocuments.size < 5) {
+                        errormsg =
+                            'Hora ya reservada o asesor no disponible en ese horario.';
+                      } else {
+                        errormsg = 'El asesor ya posee 5 horas agendadas.';
+                      }
                       // Show a message that the event overlaps with an existing event
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: Text('Error'),
-                            content: Text(
-                                'Hora ya reservada o asesor no disponible en ese horario.'),
+                            content: Text(errormsg),
                             actions: <Widget>[
                               TextButton(
                                 child: Text('Continuar'),
