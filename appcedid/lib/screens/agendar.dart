@@ -90,17 +90,33 @@ class _AgendarPageState extends State<AgendarPage> with RouteAware {
                     backgroundImage: NetworkImage(
                         'https://cdn.britannica.com/85/205685-050-24677990/Ryan-Reynolds-2011.jpg'),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 1),
                   Text(
                     selectedAsesor != null
                         ? '${selectedAsesor!['Nombre']} ${selectedAsesor!['Apellidos']}'
                         : 'Asesor',
-                    style: TextStyle(fontSize: 24),
+                    style: TextStyle(fontSize: 20),
                   ),
                   Text(
                     selectedAsesor != null
                         ? selectedAsesor!['Especialidad']
                         : 'Especializacion',
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '1',
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Seleccione un asesor de la siguiente lista:',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      )
+                    ],
                   ),
                 ],
               ),
@@ -108,7 +124,8 @@ class _AgendarPageState extends State<AgendarPage> with RouteAware {
             Divider(),
             // Middle section
             Expanded(
-              flex: 2,
+              flex:
+                  1, // aca se puede cambiar en caso de que no se adpte cuando se agreguen mas asesores
               child: FutureBuilder<List<Map<String, dynamic>>>(
                 future: fetchAsesores(),
                 builder: (context, snapshot) {
@@ -181,6 +198,22 @@ class _AgendarPageState extends State<AgendarPage> with RouteAware {
                 },
               ),
             ),
+            Row(
+              children: [
+                Text(
+                  '2',
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  ' Selecciona la hora que desea agendar \n su asesoria.',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                )
+              ],
+            ),
+
             Divider(),
             // Bottom section
             Expanded(
@@ -216,6 +249,7 @@ class _AgendarPageState extends State<AgendarPage> with RouteAware {
                               nombre: selectedAsesor!['Nombre'],
                               apellidos: selectedAsesor!['Apellidos'],
                               correo: selectedAsesor!['Correo'],
+                              dates: selectedAsesor!['Dates'],
                             ),
                           ),
                         );
@@ -237,9 +271,9 @@ class _AgendarPageState extends State<AgendarPage> with RouteAware {
       ),
       bottomNavigationBar: BottomNavigationBar(
         showUnselectedLabels: true,
-        iconSize: 32,
+        iconSize: 24,
         selectedItemColor: Colors.purple,
-        selectedFontSize: 18,
+        selectedFontSize: 16,
         unselectedItemColor: Colors.grey,
         currentIndex: currentIndex, // Establece el índice actual
         onTap: (index) {
@@ -288,15 +322,20 @@ class PagCalendario extends StatefulWidget {
   final String nombre;
   final String apellidos;
   final String correo;
+  var dates;
 
   PagCalendario(
-      {required this.nombre, required this.apellidos, required this.correo});
+      {required this.nombre,
+      required this.apellidos,
+      required this.correo,
+      required this.dates});
   @override
   _PagCalendarioState createState() => _PagCalendarioState();
 }
 
 class _PagCalendarioState extends State<PagCalendario> {
   int currentIndex = 1;
+  late ScrollController _scrollController;
   DateTime? _selectedDay;
   TimeOfDay? _selectedTime;
   Duration? _duration;
@@ -316,6 +355,18 @@ class _PagCalendarioState extends State<PagCalendario> {
     'Jueves': DateTime.thursday,
     'Viernes': DateTime.friday,
   };
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   //Check if another event is being stored at the same time and check for Asesor's availability
   Future<bool> isOverlapping(DateTime start, DateTime end) async {
     // Query for events that start before the end of the new event
@@ -421,6 +472,53 @@ class _PagCalendarioState extends State<PagCalendario> {
         backgroundColor: Color.fromARGB(255, 235, 250, 151),
         title: Text('Agendar Hora', style: TextStyle(color: Colors.black)),
         iconTheme: IconThemeData(color: Colors.black),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Disponibilidad del asesor"),
+                    content: Container(
+                      width: double.maxFinite,
+                      height: 200,
+                      child: Scrollbar(
+                        thumbVisibility: true,
+                        controller: _scrollController,
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          itemCount:
+                              widget.dates != null ? widget.dates.length : 0,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(widget.dates[index]),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text("Cerrar"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            child: Row(
+              children: [
+                Icon(Icons.calendar_today),
+                SizedBox(width: 4),
+                Text('Disponibilidad'),
+              ],
+            ),
+          ),
+        ],
       ),
       body: Container(
         margin: EdgeInsets.all(10.0),
@@ -431,10 +529,36 @@ class _PagCalendarioState extends State<PagCalendario> {
               flex: 0,
               child: Column(
                 children: [
-                  SizedBox(height: 10),
-                  Text(
-                    'Reunirse con ${widget.nombre} ${widget.apellidos}',
-                    style: TextStyle(fontSize: 24),
+                  SizedBox(height: 1),
+                  Row(
+                    children: [
+                      Text(
+                        '1',
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        ' Usted esta agendando con el asesor: \n ${widget.nombre}  ${widget.apellidos}\n.',
+                        style: TextStyle(fontSize: 17),
+                      )
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '2',
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        ' Ahora escoga un dia en el calendario  que este \n disponible  para agendar  su asesoria ',
+                        style: TextStyle(fontSize: 17),
+                      )
+                    ],
                   ),
                 ],
               ),
@@ -442,7 +566,7 @@ class _PagCalendarioState extends State<PagCalendario> {
             Divider(),
             // Middle section
             Expanded(
-              flex: 5,
+              flex: 7,
               child: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -466,6 +590,21 @@ class _PagCalendarioState extends State<PagCalendario> {
                           _selectedDay = selectedDay;
                         });
                       },
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          '3',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          ' Selecciona la hora que desea agendar \n su asesoria',
+                          style: TextStyle(fontSize: 17),
+                        )
+                      ],
                     ),
                     ElevatedButton(
                       onPressed: () async {
@@ -492,9 +631,20 @@ class _PagCalendarioState extends State<PagCalendario> {
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
-                    Text(
-                      '¿Cuánto tiempo necesitará?',
-                      style: TextStyle(fontSize: 24),
+                    Row(
+                      children: [
+                        Text(
+                          '4',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          ' Selecciona una de las 3 opciones\nde tiempo que necesita para su asesoria. \n Deslice para ver mas informacion',
+                          style: TextStyle(fontSize: 17),
+                        )
+                      ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
