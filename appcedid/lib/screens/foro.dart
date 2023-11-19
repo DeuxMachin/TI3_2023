@@ -1,5 +1,3 @@
-// ignore_for_file: override_on_non_overriding_member
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'newPostForm.dart';
@@ -18,6 +16,7 @@ class _ForoPageState extends State<ForoPage> with RouteAware {
 
   final Stream<QuerySnapshot> _postsStream =
       FirebaseFirestore.instance.collection('posts').snapshots();
+  TextEditingController _searchController = TextEditingController();
 
   @override
   void didChangeDependencies() {
@@ -28,7 +27,6 @@ class _ForoPageState extends State<ForoPage> with RouteAware {
   @override
   void didPopNext() {
     super.didPopNext();
-    // User swiped back to this page, so we update the currentIndex
     setState(() {
       currentIndex = 4;
     });
@@ -38,11 +36,52 @@ class _ForoPageState extends State<ForoPage> with RouteAware {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Foro de consultas', style: TextStyle(color: Colors.black)),
         backgroundColor: Color.fromARGB(255, 235, 250, 151),
-        iconTheme: IconThemeData(color: Colors.black),
+        automaticallyImplyLeading: false, //Remove back arrow
+
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment
+              .spaceBetween, // Alinea los elementos en los extremos
+          children: [
+            Text('Foro', style: TextStyle(color: Colors.black)), // Título
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+            ),
+            Container(
+              width: 300, // Ajusta el ancho según sea necesario
+
+              decoration: BoxDecoration(
+                color: Colors.white, // Fondo blanco
+                borderRadius: BorderRadius.circular(30), // Bordes redondeados
+              ),
+              child: TextField(
+                controller: _searchController,
+                onChanged: (value) {
+                  setState(() {});
+                },
+                textAlign: TextAlign.center, // Centrar el texto
+                decoration: InputDecoration(
+                  hintText: 'Buscar palabras...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 0),
+                  filled: true,
+                  prefixIcon:
+                      Icon(Icons.search, color: Colors.grey), // Ícono de lupa
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
-      body: Column(children: <Widget>[Expanded(child: PostList(_postsStream))]),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+              child: PostList(_postsStream, searchTerm: _searchController.text))
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -89,7 +128,10 @@ class _ForoPageState extends State<ForoPage> with RouteAware {
 
 class PostList extends StatefulWidget {
   final Stream<QuerySnapshot> postStream;
-  PostList(this.postStream);
+  final String searchTerm;
+
+  // Constructor único con parámetros opcionales
+  PostList(this.postStream, {this.searchTerm = ""});
 
   @override
   _PostListState createState() => _PostListState();
@@ -142,6 +184,14 @@ class _PostListState extends State<PostList> {
               postData['userImg'],
               postData['time'].toDate(),
             );
+            // Filtra los resultados según el término de búsqueda
+            if (widget.searchTerm.isNotEmpty &&
+                !post.body
+                    .toLowerCase()
+                    .contains(widget.searchTerm.toLowerCase())) {
+              return Container(); // Si no coincide con la búsqueda, retorna un contenedor vacío
+            }
+
             return Container(
               padding: EdgeInsets.all(4),
               margin: EdgeInsets.all(4),

@@ -155,7 +155,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 50),
                 const Padding(
                   padding: EdgeInsets.only(left: 3, bottom: 15),
                   child: Text(
@@ -166,29 +166,6 @@ class _HomePageState extends State<HomePage> with RouteAware {
                       letterSpacing: 1,
                       wordSpacing: 2,
                       color: Colors.white,
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 5, bottom: 20),
-                  width: MediaQuery.of(context).size.width,
-                  height: 55,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "Busca aqui...",
-                      hintStyle: TextStyle(
-                        color: Color.fromARGB(255, 133, 132, 132),
-                      ),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        size: 25,
-                      ),
                     ),
                   ),
                 ),

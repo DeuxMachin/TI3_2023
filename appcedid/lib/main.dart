@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
               nombre: '',
               apellidos: '',
               correo: '',
+              dates: '',
             ),
         '/login': (context) => LoginScreen(),
         '/ChatBot': (context) => ChatPage(),
