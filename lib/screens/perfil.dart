@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ti3/screens/login.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ti3/main.dart';
 import 'package:ti3/screens/HomeSi.dart';
 
@@ -57,14 +57,23 @@ class _PerfilPageState extends State<PerfilPage> with RouteAware {
           children: <Widget>[
             CircleAvatar(
               radius: 110.0,
-              backgroundImage: AssetImage('assets/user.jpg'),
+              backgroundImage: NetworkImage(loggedInUser!.photoURL ??
+                  'https://cdn.britannica.com/85/205685-050-24677990/Ryan-Reynolds-2011.jpg'),
             ),
-            Text(
-              loggedInUser?.displayName ?? 'Cargando...',
-              style: TextStyle(
-                fontSize: 40.0,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+            Card(
+              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+              child: ListTile(
+                leading: Icon(
+                  Icons.person,
+                  color: Colors.teal,
+                ),
+                title: Text(
+                  loggedInUser?.displayName ?? 'Nombre no disponible',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.teal.shade900,
+                  ),
+                ),
               ),
             ),
             Card(
@@ -75,7 +84,7 @@ class _PerfilPageState extends State<PerfilPage> with RouteAware {
                   color: Colors.teal,
                 ),
                 title: Text(
-                  userEmail ?? 'Cargando...', // Usar userEmail aquí
+                  loggedInUser!.email ?? 'Cargando...', // Usar userEmail aquí
                   style: TextStyle(
                     fontSize: 20.0,
                     color: Colors.teal.shade900,

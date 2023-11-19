@@ -5,24 +5,27 @@ Future<DocumentSnapshot> getUserData(String userId) async {
 }
 
 class Post {
+  String id;
+
   String title;
-  String subject;
+  String subject = '';
   String body;
   String author;
   String userImg;
   DateTime time;
   int likes = 0;
+
   bool userLiked = false;
-
-  Post(this.title, this.subject, this.body, this.author, this.userImg,
-      this.time);
-
-  void likePost() {
-    this.userLiked = !this.userLiked;
-    if (this.userLiked) {
-      this.likes += 1;
-    } else {
-      this.likes -= 1;
-    }
+  Post(this.id, this.title, this.body, this.author, this.userImg, this.time);
+  factory Post.fromDocument(DocumentSnapshot doc) {
+    return Post(
+      doc.id, // Aquí se asigna el id del documento a la propiedad id de Post
+      doc['title'],
+      doc['body'],
+      doc['author'],
+      doc['userImg'],
+      doc['time']
+          .toDate(), // Asegúrate de que 'time' se convierta correctamente a DateTime
+    );
   }
 }

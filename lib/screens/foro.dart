@@ -1,12 +1,12 @@
-// ignore_for_file: override_on_non_overriding_member
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ti3/screens/userPost.dart';
 import 'newPostForm.dart';
 import 'post.dart';
 import 'respuestaForo.dart';
 import 'package:ti3/main.dart';
 import 'package:ti3/screens/HomeSi.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class ForoPage extends StatefulWidget {
   @override
@@ -18,6 +18,7 @@ class _ForoPageState extends State<ForoPage> with RouteAware {
 
   final Stream<QuerySnapshot> _postsStream =
       FirebaseFirestore.instance.collection('posts').snapshots();
+  TextEditingController _searchController = TextEditingController();
 
   @override
   void didChangeDependencies() {
@@ -28,7 +29,6 @@ class _ForoPageState extends State<ForoPage> with RouteAware {
   @override
   void didPopNext() {
     super.didPopNext();
-    // User swiped back to this page, so we update the currentIndex
     setState(() {
       currentIndex = 4;
     });
@@ -38,21 +38,51 @@ class _ForoPageState extends State<ForoPage> with RouteAware {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Foro de consultas', style: TextStyle(color: Colors.black)),
         backgroundColor: Color.fromARGB(255, 235, 250, 151),
-        iconTheme: IconThemeData(color: Colors.black),
+        automaticallyImplyLeading: false,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Foro', style: TextStyle(color: Colors.black)),
+                Container(
+                  width: 300,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      hintText: 'Buscar palabras...',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: EdgeInsets.symmetric(vertical: 0),
+                      filled: true,
+                      prefixIcon: Icon(Icons.search, color: Colors.grey),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-      body: Column(children: <Widget>[Expanded(child: PostList(_postsStream))]),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => NewPostForm()),
-          );
-        },
-        child: Icon(Icons.add, color: Colors.white),
-        backgroundColor: Color.fromRGBO(56, 84, 232, 1),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+              child: PostList(_postsStream, searchTerm: _searchController.text))
+        ],
       ),
+      floatingActionButton: buildSpeedDial(),
       bottomNavigationBar: BottomNavigationBar(
         showUnselectedLabels: true,
         iconSize: 32,
@@ -85,11 +115,54 @@ class _ForoPageState extends State<ForoPage> with RouteAware {
       ),
     );
   }
+
+  SpeedDial buildSpeedDial() {
+    return SpeedDial(
+      icon: Icons.menu,
+      activeIcon: Icons.close,
+      buttonSize: Size(56.0, 56.0),
+      visible: true,
+      curve: Curves.bounceIn,
+      overlayColor: Colors.black,
+      overlayOpacity: 0.5,
+      tooltip: 'Opciones',
+      heroTag: 'speed-dial-hero-tag',
+      backgroundColor: Color.fromRGBO(56, 84, 232, 1),
+      foregroundColor: Colors.white,
+      elevation: 8.0,
+      shape: CircleBorder(),
+      children: [
+        SpeedDialChild(
+          child: Icon(Icons.add),
+          backgroundColor: Colors.green,
+          label: 'Crear publicacion',
+          labelStyle: TextStyle(fontSize: 18.0),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => NewPostForm()),
+          ),
+        ),
+        SpeedDialChild(
+          child: Icon(Icons.edit),
+          backgroundColor: Colors.blue,
+          label: 'Mis Publicaciones',
+          labelStyle: TextStyle(fontSize: 18.0),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => UserPostsPage()),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class PostList extends StatefulWidget {
   final Stream<QuerySnapshot> postStream;
-  PostList(this.postStream);
+  final String searchTerm;
+
+  // Constructor único con parámetros opcionales
+  PostList(this.postStream, {this.searchTerm = ""});
 
   @override
   _PostListState createState() => _PostListState();
@@ -142,6 +215,14 @@ class _PostListState extends State<PostList> {
               postData['userImg'],
               postData['time'].toDate(),
             );
+            // Filtra los resultados según el término de búsqueda
+            if (widget.searchTerm.isNotEmpty &&
+                !post.title
+                    .toLowerCase()
+                    .contains(widget.searchTerm.toLowerCase())) {
+              return Container(); // Si no coincide con la búsqueda, retorna un contenedor vacío
+            }
+
             return Container(
               padding: EdgeInsets.all(4),
               margin: EdgeInsets.all(4),
@@ -169,17 +250,12 @@ class _PostListState extends State<PostList> {
                     Padding(
                       padding: EdgeInsets.all(8),
                       child: Align(
-                        alignment: Alignment.center,
+                        alignment: Alignment.topLeft,
                         child: Text(limitWords(post.body, 20)),
                       ),
                     ),
                     Row(
                       children: <Widget>[
-                        IconButton(
-                          icon: Icon(Icons.favorite),
-                          onPressed: () => post.likePost(),
-                          color: post.userLiked ? Colors.green : Colors.black,
-                        ),
                         IconButton(
                           icon: Icon(Icons.arrow_circle_right_outlined),
                           onPressed: () {

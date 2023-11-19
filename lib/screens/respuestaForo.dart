@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'post.dart';
 import 'package:intl/intl.dart';
 import 'perfil.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PostList extends StatefulWidget {
   final List<Post> listItems;
@@ -21,6 +23,8 @@ class _PostListState extends State<PostList> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       itemCount: this.widget.listItems.length,
       itemBuilder: (context, index) {
         var post = this.widget.listItems[index];
@@ -30,6 +34,7 @@ class _PostListState extends State<PostList> {
           margin: EdgeInsets.all(4),
           child: Card(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 ListTile(
                   leading: CircleAvatar(
@@ -108,23 +113,180 @@ class forum2 extends StatefulWidget {
 
 class _forum2State extends State<forum2> {
   List<Post> posts = [];
+  List<Map<String, dynamic>> comments =
+      []; // Lista para almacenar los comentarios
+  final TextEditingController _commentController = TextEditingController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
     super.initState();
     posts.add(widget.post);
+    _loadComments();
+  }
+
+  Future<void> _loadComments() async {
+    // Obtener los comentarios de Firestore en orden cronológico
+    var commentSnapshot = await _firestore
+        .collection('posts')
+        .doc(widget.post.id)
+        .collection('comments')
+        .orderBy('timestamp', descending: false) // Ordena por timestamp
+        .get();
+
+    List<Map<String, dynamic>> retrievedComments = [];
+    for (var doc in commentSnapshot.docs) {
+      retrievedComments.add(doc.data());
+    }
+
+    setState(() {
+      comments = retrievedComments;
+    });
+  }
+
+  Future<void> _sendComment() async {
+    User? currentUser = _auth.currentUser;
+    if (currentUser != null && _commentController.text.isNotEmpty) {
+      // Proporcionar una URL de imagen por defecto si currentUser.photoURL es null
+      String userImageUrl = currentUser.photoURL ?? 'URL_de_imagen_por_defecto';
+
+      // Agregar el comentario a la subcolección 'comments' de la publicación
+      await _firestore
+          .collection('posts')
+          .doc(widget.post.id)
+          .collection('comments')
+          .add({
+        'nombre': currentUser.displayName ?? 'Anónimo',
+        'userImageUrl': userImageUrl,
+        'texto': _commentController.text,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      _commentController.clear();
+      await _loadComments();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title:
-              Text('Foro de respuestas', style: TextStyle(color: Colors.black)),
-          backgroundColor: Color.fromARGB(255, 235, 250, 151),
-          iconTheme: IconThemeData(color: Colors.black),
-        ),
-        body:
-            Column(children: <Widget>[Expanded(child: PostList(this.posts))]));
+      appBar: AppBar(
+        title:
+            Text('Foro de respuestas', style: TextStyle(color: Colors.black)),
+        backgroundColor: Color.fromARGB(255, 235, 250, 151),
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: ListView(
+              children: <Widget>[
+                PostList(this.posts),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: comments.length,
+                  itemBuilder: (context, index) {
+                    var comment = comments[index];
+                    String nombreCorto = (comment['nombre'] as String).length >
+                            15
+                        ? (comment['nombre'] as String).substring(0, 15) + '...'
+                        : comment['nombre'];
+
+                    return Card(
+                      color:
+                          Colors.lightBlue[50], // Color de fondo de la tarjeta
+                      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      child: Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage:
+                                      NetworkImage(comment['userImageUrl']),
+                                  radius: 20,
+                                ),
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        nombreCorto,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      Text(
+                                        DateFormat('dd MMM yyyy').format(
+                                            comment['timestamp'].toDate()),
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.more_vert),
+                                  onPressed: () {
+                                    // Aquí puedes agregar la lógica para manejar el clic en el icono
+                                  },
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              comment['texto'],
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: _commentController,
+                    decoration: InputDecoration(
+                      labelText: 'Escribe un comentario...',
+                      border: OutlineInputBorder(),
+                      fillColor: Colors.lightBlue[50],
+                      filled: true,
+                    ),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: () async {
+                    await _sendComment();
+                    setState(() {
+                      _commentController.clear();
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
