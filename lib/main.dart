@@ -6,7 +6,10 @@ import 'package:ti3/screens/chatbot.dart';
 import 'package:ti3/screens/perfil.dart';
 import 'package:ti3/screens/foro.dart';
 import 'package:ti3/screens/cursos.dart';
+import 'package:ti3/screens/showmeetings.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorObservers: [routeObserver],
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
@@ -28,12 +32,18 @@ class MyApp extends StatelessWidget {
       home: HomeScreen(),
       routes: {
         '/Agendar': (context) => AgendarPage(),
-        '/calendario': (context) => PagCalendario(),
+        '/calendario': (context) => PagCalendario(
+              nombre: '',
+              apellidos: '',
+              correo: '',
+              dates: '',
+            ),
         '/login': (context) => LoginScreen(),
         '/ChatBot': (context) => ChatPage(),
         '/Perfil': (context) => PerfilPage(),
         '/Foro': (context) => ForoPage(),
-        '/Cursos' :(context) => Cursospage(),
+        '/Cursos': (context) => Cursospage(),
+        '/Reuniones': (context) => MeetingsPage(),
       },
     );
   }

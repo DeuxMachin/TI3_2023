@@ -50,6 +50,10 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
+        // KEY PARA PODER CONECTARSE A FIREBASE
+        manifestPlaceholders += [
+         'appAuthRedirectScheme': '296261999476-9bdv3f7c0if810n8dlla77061aive76f.apps.googleusercontent.com'
+       ]
     }
 
     buildTypes {

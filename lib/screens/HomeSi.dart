@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:ti3/screens/Cursos/DocenciaLinea.dart';
 import 'package:ti3/screens/agendar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ti3/screens/chatbot.dart';
 import 'package:ti3/screens/perfil.dart';
 import 'package:ti3/screens/foro.dart';
-import 'package:ti3/screens/cursos.dart';
+import 'package:ti3/screens/Cursos/cursos.dart';
+import 'package:ti3/screens/Cursos/ModeloEduca.dart';
+import 'package:ti3/screens/Cursos/EducaBlack.dart';
+import 'package:ti3/screens/Cursos/HyFlex.dart';
+import 'package:ti3/screens/Cursos/ImpulsaTuRed.dart';
+import 'package:ti3/utils/authentication.dart';
+import 'package:ti3/screens/login.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,26 +21,31 @@ class HomePage extends StatefulWidget {
 List catNames = [
   "Blackboard",
   'Portal',
-  'Directorio',
+  'Glosario',
   'UCT',
   'Calendario',
-  'DTE UCT',
+  'CINAP',
 ];
 List<Color> catColors = [
   const Color(0xFFFFCF2F),
   const Color(0xFF6FE08D),
   const Color(0xFF61BDFD),
   const Color(0xFFFC7F7F),
-  const Color(0XFFCB84FB),
+  Color.fromARGB(255, 255, 255, 255),
   const Color(0XFF78E667),
 ];
+
 List<Widget> catIcon = [
   Image.asset(
     'assets/blackboard.png', // Ruta de la imagen en la carpeta de assets
     width: 30, // Ancho de la imagen
     height: 30, // Alto de la imagen
   ),
-  const Icon(Icons.video_library, color: Colors.white, size: 30),
+  Image.asset(
+    'assets/portal.png', // Ruta de la imagen en la carpeta de assets
+    width: 80, // Ancho de la imagen
+    height: 80, // Alto de la imagen
+  ),
   Image.asset(
     'assets/directorio.png', // Ruta de la imagen en la carpeta de assets
     width: 50, // Ancho de la imagen
@@ -44,7 +56,11 @@ List<Widget> catIcon = [
     width: 30, // Ancho de la imagen
     height: 30, // Alto de la imagen
   ),
-  const Icon(Icons.calendar_month, color: Colors.white, size: 30),
+  Image.asset(
+    'assets/calendario.png', // Ruta de la imagen en la carpeta de assets
+    width: 90, // Ancho de la imagen
+    height: 90, // Alto de la imagen
+  ),
   Image.asset(
     'assets/Logo_UCT.png', // Ruta de la imagen en la carpeta de assets
     width: 30, // Ancho de la imagen
@@ -52,7 +68,14 @@ List<Widget> catIcon = [
   ),
 ];
 
-final cursos = [Cursospage()]; // Para rutas de los cursos a trabajar.
+final cursos = [
+  Cursospage(),
+  ModeloEduca(),
+  DocenciaLinea(),
+  EducaBlack(),
+  ImpulsaRed(),
+  HyFlex()
+]; // Para rutas de los cursos a trabajar.
 
 final pages = [
   //Para las rutas del navbar.
@@ -75,7 +98,7 @@ List<String> catUrls = [
 void launchURL(int index) async {
   Uri url = Uri.parse(catUrls[index]);
   try {
-    await launchUrl(url);
+    await launch(url.toString());
   } catch (e) {
     throw 'No se pudo lanzar $url';
   }
@@ -84,12 +107,21 @@ void launchURL(int index) async {
 class _HomePageState extends State<HomePage> {
   int currentIndex = 0;
   List imgList = [
-    'react',
-    'icono',
-    'fea',
-    'cloud',
-    'padlet',
-    'pear',
+    'Virtualiza',
+    'mei',
+    'DocenciaOnline',
+    'IntroduccionaEducaBlackboard',
+    'ImpulsaTuRed',
+    'Hyflex',
+  ];
+
+  List nameList = [
+    'Virtualiza',
+    'Modelo institucional',
+    'Docencia online',
+    'Educa blackboard',
+    'Impulsa Tu Red',
+    'HyFlex',
   ];
   @override
   Widget build(BuildContext context) {
@@ -108,7 +140,7 @@ class _HomePageState extends State<HomePage> {
             ),
             child: Column(
               children: [
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Icon(
@@ -116,18 +148,30 @@ class _HomePageState extends State<HomePage> {
                       size: 30,
                       color: Colors.white,
                     ),
-                    Icon(
-                      Icons.account_circle,
-                      size: 30,
-                      color: Colors.white,
-                    )
+                    IconButton(
+                      icon: Icon(
+                        Icons.logout,
+                        size: 30,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        Authentication.logout();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()),
+                        );
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            '/login', (Route<dynamic> route) => false);
+                      },
+                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
                 const Padding(
                   padding: EdgeInsets.only(left: 3, bottom: 15),
                   child: Text(
-                    "DTE UCT",
+                    "CINAP UCT",
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.w600,
@@ -151,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                       border: InputBorder.none,
                       hintText: "Busca aqui...",
                       hintStyle: TextStyle(
-                        color: Color.fromARGB(255, 133, 132, 132),
+                        color: Color.fromARGB(255, 133, 133, 132),
                       ),
                       prefixIcon: Icon(
                         Icons.search,
@@ -261,13 +305,13 @@ class _HomePageState extends State<HomePage> {
                               padding: EdgeInsets.all(10),
                               child: Image.asset(
                                 "assets/${imgList[index]}.png",
-                                width: 100,
-                                height: 100,
+                                width: 150,
+                                height: 80,
                               ),
                             ),
                             SizedBox(height: 10),
                             Text(
-                              imgList[index],
+                              nameList[index],
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w600,

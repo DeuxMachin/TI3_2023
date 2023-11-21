@@ -61,7 +61,7 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      "Bienvenido a DTE UCT",
+                      "Bienvenido a CINAP UCT",
                       style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.w600,

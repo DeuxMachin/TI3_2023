@@ -1,38 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ti3/utils/database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class NewPostForm extends StatefulWidget {
+class EditPostForm extends StatefulWidget {
+  final String documentId; // ID del documento a editar
+
+  EditPostForm({required this.documentId});
+
   @override
-  _NewPostFormState createState() => _NewPostFormState();
+  _EditPostFormState createState() => _EditPostFormState();
 }
 
-class _NewPostFormState extends State<NewPostForm> {
+class _EditPostFormState extends State<EditPostForm> {
   final _formKey = GlobalKey<FormState>();
-  String title = '';
-  String subject = '';
-  String body = '';
-  String author = 'Anónimo'; // Valor por defecto
-  String userImg =
-      'https://cdn-icons-png.flaticon.com/512/149/149071.png'; // Valor por defecto
+  TextEditingController _titleController = TextEditingController();
+  TextEditingController _subjectController = TextEditingController();
+  TextEditingController _bodyController = TextEditingController();
   final db = DatabaseService();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
 
   @override
   void initState() {
     super.initState();
-    _getCurrentUser();
+    _loadCurrentPost();
   }
 
-  Future<void> _getCurrentUser() async {
-    User? currentUser = _auth.currentUser;
-    if (currentUser != null) {
+  Future<void> _loadCurrentPost() async {
+    var document = await FirebaseFirestore.instance
+        .collection('posts')
+        .doc(widget.documentId)
+        .get();
+    var data = document.data();
+    if (data != null) {
       setState(() {
-        author = currentUser.displayName ?? 'Anónimo';
-        userImg = currentUser.photoURL ??
-            'https://cdn-icons-png.flaticon.com/512/149/149071.png'; // Imagen por defecto
+        _titleController.text = data['title'] ?? '';
+        _subjectController.text = data['subject'] ?? '';
+        _bodyController.text = data['body'] ?? '';
       });
     }
   }
@@ -61,7 +65,7 @@ class _NewPostFormState extends State<NewPostForm> {
     return Scaffold(
       appBar: AppBar(
         title:
-            Text('Crea tu publicacion', style: TextStyle(color: Colors.black)),
+            Text('Edita tu publicación', style: TextStyle(color: Colors.black)),
         iconTheme: IconThemeData(color: Colors.black),
         backgroundColor: Color.fromARGB(255, 235, 250, 151),
       ),
@@ -79,10 +83,8 @@ class _NewPostFormState extends State<NewPostForm> {
               child: Column(
                 children: <Widget>[
                   TextFormField(
-                    decoration: _inputDecoration('Titulo'),
-                    onSaved: (value) {
-                      title = value ?? '';
-                    },
+                    controller: _titleController,
+                    decoration: _inputDecoration('Título'),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Por favor ingresa un título';
@@ -92,10 +94,8 @@ class _NewPostFormState extends State<NewPostForm> {
                   ),
                   SizedBox(height: 16),
                   TextFormField(
+                    controller: _subjectController,
                     decoration: _inputDecoration('Materia'),
-                    onSaved: (value) {
-                      subject = value ?? '';
-                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Por favor ingresa una materia';
@@ -105,13 +105,11 @@ class _NewPostFormState extends State<NewPostForm> {
                   ),
                   SizedBox(height: 16),
                   TextFormField(
+                    controller: _bodyController,
                     decoration: _inputDecoration('Cuerpo'),
-                    onSaved: (value) {
-                      body = value ?? '';
-                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor ingresa su consulta';
+                        return 'Por favor ingresa el cuerpo del post';
                       }
                       return null;
                     },
@@ -120,20 +118,19 @@ class _NewPostFormState extends State<NewPostForm> {
                   ElevatedButton.icon(
                     onPressed: () async {
                       if (_formKey.currentState?.validate() ?? false) {
-                        _formKey.currentState?.save();
-                        await db.createPost(
-                          title,
-                          subject,
-                          body,
-                          author,
-                          userImg,
-                          DateTime.now(),
-                        );
+                        await FirebaseFirestore.instance
+                            .collection('posts')
+                            .doc(widget.documentId)
+                            .update({
+                          'title': _titleController.text,
+                          'subject': _subjectController.text,
+                          'body': _bodyController.text,
+                        });
                         Navigator.pop(context);
                       }
                     },
-                    icon: Icon(Icons.send),
-                    label: Text('Enviar'),
+                    icon: Icon(Icons.update),
+                    label: Text('Actualizar'),
                     style: ElevatedButton.styleFrom(
                       padding:
                           EdgeInsets.symmetric(horizontal: 30, vertical: 15),

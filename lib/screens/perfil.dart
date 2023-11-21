@@ -1,10 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ti3/screens/login.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ti3/main.dart';
+import 'package:ti3/screens/HomeSi.dart';
 
-class PerfilPage extends StatelessWidget {
+class PerfilPage extends StatefulWidget {
+  @override
+  _PerfilPageState createState() => _PerfilPageState();
+}
+
+class _PerfilPageState extends State<PerfilPage> with RouteAware {
+  int currentIndex = 3;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? loggedInUser;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser() {
+    loggedInUser = _auth.currentUser;
+    setState(() {});
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    // User swiped back to this page, so we update the currentIndex
+    setState(() {
+      currentIndex = 3;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title:
             Text('Perfil del Docente', style: TextStyle(color: Colors.black)),
         backgroundColor: Color.fromARGB(255, 235, 250, 151),
@@ -16,15 +57,8 @@ class PerfilPage extends StatelessWidget {
           children: <Widget>[
             CircleAvatar(
               radius: 110.0,
-              backgroundImage: AssetImage('assets/user.png'),
-            ),
-            Text(
-              'Nombre del Docente',
-              style: TextStyle(
-                fontSize: 40.0,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+              backgroundImage: NetworkImage(loggedInUser!.photoURL ??
+                  'https://cdn.britannica.com/85/205685-050-24677990/Ryan-Reynolds-2011.jpg'),
             ),
             Card(
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
@@ -34,39 +68,7 @@ class PerfilPage extends StatelessWidget {
                   color: Colors.teal,
                 ),
                 title: Text(
-                  'Nombre Y Apellido',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.teal.shade900,
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.cake,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  '07-06-1988',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.teal.shade900,
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.phone,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  '+56900001111',
+                  loggedInUser?.displayName ?? 'Nombre no disponible',
                   style: TextStyle(
                     fontSize: 20.0,
                     color: Colors.teal.shade900,
@@ -82,23 +84,7 @@ class PerfilPage extends StatelessWidget {
                   color: Colors.teal,
                 ),
                 title: Text(
-                  'docente@uct.cl',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.teal.shade900,
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.lock,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  'FideosConSalsa44232',
+                  loggedInUser!.email ?? 'Cargando...', // Usar userEmail aquí
                   style: TextStyle(
                     fontSize: 20.0,
                     color: Colors.teal.shade900,
@@ -108,6 +94,36 @@ class PerfilPage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        showUnselectedLabels: true,
+        iconSize: 32,
+        selectedItemColor: Colors.purple,
+        selectedFontSize: 18,
+        unselectedItemColor: Colors.grey,
+        currentIndex: currentIndex, // Establece el índice actual
+        onTap: (index) {
+          // Verifica si el índice está dentro del rango válido
+          if (index >= 0 && index < pages.length) {
+            // Cambia de página al tocar un ícono en el BottomNavigationBar
+            setState(() {
+              currentIndex = index;
+            });
+
+            // Navega a la página correspondiente utilizando Navigator
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => pages[currentIndex]),
+            );
+          }
+        },
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Agendar'),
+          BottomNavigationBarItem(icon: Icon(Icons.flutter_dash), label: 'Bot'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Cuenta'),
+          BottomNavigationBarItem(icon: Icon(Icons.forum), label: 'Foro'),
+        ],
       ),
     );
   }

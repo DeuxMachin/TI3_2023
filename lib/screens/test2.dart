@@ -149,51 +149,6 @@ class _forum2State extends State<forum2> {
     });
   }
 
-// Función para editar comentarios
-  Future<void> _editComment(String commentId, String originalText) async {
-    String? editedText = await showDialog<String>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Editar Comentario'),
-          content: TextField(
-            controller: TextEditingController(text: originalText),
-            autofocus: true,
-            decoration: InputDecoration(hintText: 'Escribe tu comentario aquí'),
-            onChanged: (value) {
-              originalText = value;
-            },
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancelar'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            TextButton(
-              child: const Text('Guardar'),
-              onPressed: () {
-                Navigator.pop(context, originalText);
-              },
-            ),
-          ],
-        );
-      },
-    );
-
-    if (editedText != null && editedText != originalText) {
-      // Actualizar el comentario en Firestore
-      await _firestore
-          .collection('posts')
-          .doc(widget.post.id)
-          .collection('comments')
-          .doc(commentId)
-          .update({'texto': editedText});
-      await _loadComments();
-    }
-  }
-
   Future<void> _sendComment() async {
     User? currentUser = _auth.currentUser;
     if (currentUser != null && _commentController.text.isNotEmpty) {
