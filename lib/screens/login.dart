@@ -23,6 +23,15 @@ class _LoginScreenState extends State<LoginScreen> with RouteAware {
   bool rememberUser = false;
 
   @override
+  initState() {
+    super.initState();
+    // Logout when resetting app
+    setState(() {
+      Authentication.logout();
+    });
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);

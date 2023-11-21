@@ -277,7 +277,7 @@ class _AgendarPageState extends State<AgendarPage> with RouteAware {
       ),
       bottomNavigationBar: BottomNavigationBar(
         showUnselectedLabels: true,
-        iconSize: 24,
+        iconSize: 32,
         selectedItemColor: Colors.purple,
         selectedFontSize: 16,
         unselectedItemColor: Colors.grey,

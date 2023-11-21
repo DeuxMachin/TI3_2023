@@ -51,27 +51,6 @@ class _PostListState extends State<PostList> {
                         style: TextStyle(color: Colors.blue[200], fontSize: 20),
                       ),
                       Text(post.subject),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PerfilPage()),
-                          );
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            border: Border.all(color: Colors.yellow, width: 2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            'perfil',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),

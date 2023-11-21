@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ti3/main.dart';
 import 'package:ti3/screens/Cursos/DocenciaLinea.dart';
 import 'package:ti3/screens/agendar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -104,7 +105,7 @@ void launchURL(int index) async {
   }
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with RouteAware {
   int currentIndex = 0;
   List imgList = [
     'Virtualiza',
@@ -167,7 +168,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 50),
                 const Padding(
                   padding: EdgeInsets.only(left: 3, bottom: 15),
                   child: Text(
@@ -178,29 +179,6 @@ class _HomePageState extends State<HomePage> {
                       letterSpacing: 1,
                       wordSpacing: 2,
                       color: Colors.white,
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 5, bottom: 20),
-                  width: MediaQuery.of(context).size.width,
-                  height: 55,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "Busca aqui...",
-                      hintStyle: TextStyle(
-                        color: Color.fromARGB(255, 133, 133, 132),
-                      ),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        size: 25,
-                      ),
                     ),
                   ),
                 ),
@@ -360,5 +338,26 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    // User swiped back to this page, so we update the currentIndex
+    setState(() {
+      currentIndex = 0;
+    });
   }
 }

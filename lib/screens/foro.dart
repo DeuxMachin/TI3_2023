@@ -217,7 +217,7 @@ class _PostListState extends State<PostList> {
             );
             // Filtra los resultados según el término de búsqueda
             if (widget.searchTerm.isNotEmpty &&
-                !post.title
+                !postData['title']
                     .toLowerCase()
                     .contains(widget.searchTerm.toLowerCase())) {
               return Container(); // Si no coincide con la búsqueda, retorna un contenedor vacío
