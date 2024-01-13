@@ -61,9 +61,9 @@ class _NewPostFormState extends State<NewPostForm> {
     return Scaffold(
       appBar: AppBar(
         title:
-            Text('Crea tu publicacion', style: TextStyle(color: Colors.black)),
-        iconTheme: IconThemeData(color: Colors.black),
-        backgroundColor: Color.fromARGB(255, 235, 250, 151),
+            Text('Crea tu publicacion', style: TextStyle(color: Colors.white)),
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Colors.deepPurple,
       ),
       body: Padding(
         padding: EdgeInsets.all(16),

@@ -56,9 +56,9 @@ class _AgendarPageState extends State<AgendarPage> with RouteAware {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false, //Remove back arrow
-        backgroundColor: Color.fromARGB(255, 235, 250, 151),
-        title: Text('Agendar Hora', style: TextStyle(color: Colors.black)),
-        iconTheme: IconThemeData(color: Colors.black),
+        backgroundColor: Colors.deepPurple,
+        title: Text('Agendar Hora', style: TextStyle(color: Colors.white)),
+        iconTheme: IconThemeData(color: Colors.white),
         actions: <Widget>[
           TextButton(
             onPressed: () {
@@ -69,22 +69,27 @@ class _AgendarPageState extends State<AgendarPage> with RouteAware {
             },
             child: Row(
               children: [
-                Icon(Icons.calendar_today),
+                Icon(
+                  Icons.calendar_today,
+                  color: Colors.yellow,
+                ),
                 SizedBox(width: 4), //Space between text and icon
-                Text('Reuniones'),
+                Text(
+                  'Reuniones',
+                  style: TextStyle(color: Colors.yellow),
+                ),
               ],
             ),
           ),
         ],
       ),
-      body: Container(
-        margin: EdgeInsets.all(10.0),
-        child: Column(
-          children: <Widget>[
-            // Top section
-            Expanded(
-              flex: 3,
-              child: Column(
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.all(10.0),
+          child: Column(
+            children: <Widget>[
+              // Top section
+              Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircleAvatar(
@@ -94,7 +99,7 @@ class _AgendarPageState extends State<AgendarPage> with RouteAware {
                             selectedAsesor!['photoUrl'].toString().isNotEmpty
                         ? NetworkImage(selectedAsesor!['photoUrl'] as String)
                         : AssetImage('assets/profilepic.png')
-                            as ImageProvider, // Default image from assets,
+                            as ImageProvider, // Default image from assets
                   ),
                   SizedBox(height: 1),
                   Text(
@@ -111,14 +116,7 @@ class _AgendarPageState extends State<AgendarPage> with RouteAware {
                   Row(
                     children: [
                       Text(
-                        '1',
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        'Seleccione un asesor de la siguiente lista:',
+                        '\nSeleccione un asesor:',
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       )
@@ -126,13 +124,9 @@ class _AgendarPageState extends State<AgendarPage> with RouteAware {
                   ),
                 ],
               ),
-            ),
-            Divider(),
-            // Middle section
-            Expanded(
-              flex:
-                  1, // aca se puede cambiar en caso de que no se adpte cuando se agreguen mas asesores
-              child: FutureBuilder<List<Map<String, dynamic>>>(
+              Divider(),
+              // Middle section
+              FutureBuilder<List<Map<String, dynamic>>>(
                 future: fetchAsesores(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -152,6 +146,10 @@ class _AgendarPageState extends State<AgendarPage> with RouteAware {
                                 .floor();
 
                         return GridView.builder(
+                          shrinkWrap:
+                              true, // Important for use within SingleChildScrollView
+                          physics:
+                              NeverScrollableScrollPhysics(), // Prevents scrolling within GridView
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: itemsPerRow,
@@ -203,76 +201,71 @@ class _AgendarPageState extends State<AgendarPage> with RouteAware {
                   }
                 },
               ),
-            ),
-            Row(
-              children: [
-                Text(
-                  '2',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  ),
+              if (selectedAsesor != null)
+                Row(
+                  children: [
+                    Text(
+                      '\nHorarios disponibles:',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    )
+                  ],
                 ),
-                Text(
-                  ' Selecciona la hora que desea agendar \n su asesoria.',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
-
-            Divider(),
-            // Bottom section
-            Expanded(
-              flex: 2,
-              child: Column(
+              Divider(),
+              // Bottom section
+              Column(
                 children: <Widget>[
                   // List of dates with time
-                  Expanded(
-                    child: Scrollbar(
-                      thumbVisibility: true,
+                  Scrollbar(
+                    thumbVisibility: true,
+                    controller: _scrollController,
+                    child: ListView.builder(
+                      shrinkWrap:
+                          true, // Important for use within SingleChildScrollView
+                      physics:
+                          NeverScrollableScrollPhysics(), // Prevents scrolling within ListView
                       controller: _scrollController,
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        itemCount: selectedAsesor != null
-                            ? selectedAsesor!['Dates'].length
-                            : 0,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(selectedAsesor!['Dates'][index]),
-                          );
-                        },
-                      ),
+                      itemCount: selectedAsesor != null
+                          ? selectedAsesor!['Dates'].length
+                          : 0,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(selectedAsesor!['Dates'][index]),
+                        );
+                      },
                     ),
                   ),
-                  // Button
-                  ElevatedButton(
-                    onPressed: () {
-                      if (selectedAsesor != null) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PagCalendario(
-                              nombre: selectedAsesor!['Nombre'],
-                              apellidos: selectedAsesor!['Apellidos'],
-                              correo: selectedAsesor!['Correo'],
-                              dates: selectedAsesor!['Dates'],
+                  if (selectedAsesor != null)
+                    // Button
+                    ElevatedButton(
+                      onPressed: () {
+                        if (selectedAsesor != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PagCalendario(
+                                nombre: selectedAsesor!['Nombre'],
+                                apellidos: selectedAsesor!['Apellidos'],
+                                correo: selectedAsesor!['Correo'],
+                                dates: selectedAsesor!['Dates'],
+                              ),
                             ),
-                          ),
-                        );
-                      } else {
-                        // Optionally, show a message to the user to select an asesor first
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text('Por favor seleccione un Asesor')),
-                        );
-                      }
-                    },
-                    child: Text('Agendar Hora'),
-                  ),
+                          );
+                        } else {
+                          // Optionally, show a message to the user to select an asesor first
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content:
+                                    Text('Por favor seleccione un Asesor')),
+                          );
+                        }
+                      },
+                      child: Text('Agendar Hora'),
+                    ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -301,7 +294,6 @@ class _AgendarPageState extends State<AgendarPage> with RouteAware {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Agendar'),
           BottomNavigationBarItem(icon: Icon(Icons.flutter_dash), label: 'Bot'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Cuenta'),
           BottomNavigationBarItem(icon: Icon(Icons.forum), label: 'Foro'),
         ],
       ),
@@ -340,6 +332,7 @@ class PagCalendario extends StatefulWidget {
 }
 
 class _PagCalendarioState extends State<PagCalendario> {
+  Duration? _selectedDuration;
   int currentIndex = 1;
   late ScrollController _scrollController;
   DateTime? _selectedDay;
@@ -485,9 +478,9 @@ class _PagCalendarioState extends State<PagCalendario> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 235, 250, 151),
-        title: Text('Agendar Hora', style: TextStyle(color: Colors.black)),
-        iconTheme: IconThemeData(color: Colors.black),
+        backgroundColor: Colors.deepPurple,
+        title: Text('Agendar Hora', style: TextStyle(color: Colors.white)),
+        iconTheme: IconThemeData(color: Colors.white),
         actions: <Widget>[
           TextButton(
             onPressed: () {
@@ -571,100 +564,65 @@ class _PagCalendarioState extends State<PagCalendario> {
             },
             child: Row(
               children: [
-                Icon(Icons.calendar_today),
+                Icon(
+                  Icons.calendar_today,
+                  color: Colors.yellow,
+                ),
                 SizedBox(width: 4),
-                Text('Disponibilidad'),
+                Text(
+                  'Disponibilidad',
+                  style: TextStyle(color: Colors.yellow),
+                ),
               ],
             ),
           ),
         ],
       ),
-      body: Container(
-        margin: EdgeInsets.all(10.0),
-        child: Column(
-          children: <Widget>[
-            // Top section
-            Expanded(
-              flex: 0,
-              child: Column(
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.all(10.0),
+          child: Column(
+            children: <Widget>[
+              // Top section
+              Column(
                 children: [
                   SizedBox(height: 1),
                   Row(
                     children: [
                       Text(
-                        '1',
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        ' Usted esta agendando con el asesor: \n ${widget.nombre}  ${widget.apellidos}\n.',
+                        'Usted esta agendando con el asesor:\n${widget.nombre} ${widget.apellidos}.\nSeleccione fecha:',
                         style: TextStyle(fontSize: 17),
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        '2',
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                        ),
                       ),
-                      Text(
-                        ' Ahora escoga un dia en el calendario  que \n este disponible  para agendar  su asesoria ',
-                        style: TextStyle(fontSize: 17),
-                      )
                     ],
                   ),
                 ],
               ),
-            ),
-            Divider(),
-            // Middle section
-            Expanded(
-              flex: 7,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    TableCalendar(
-                      firstDay: DateTime.utc(2010, 10, 16),
-                      lastDay: DateTime.utc(2030, 3, 14),
-                      focusedDay: _selectedDay ?? DateTime.now(),
-                      selectedDayPredicate: (day) {
-                        return isSameDay(_selectedDay, day);
-                      },
-                      onDaySelected: (selectedDay, focusedDay) {
-                        if (selectedDay.isBefore(DateTime.now())) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text(
-                                    'No puedes seleccionar un día pasado')),
-                          );
-                          return; // Do not update state if selected day is before today
-                        }
+              Divider(),
+              // Middle section
+              Column(
+                children: [
+                  TableCalendar(
+                    firstDay: DateTime.utc(2010, 10, 16),
+                    lastDay: DateTime.utc(2030, 3, 14),
+                    focusedDay: _selectedDay ?? DateTime.now(),
+                    selectedDayPredicate: (day) {
+                      return isSameDay(_selectedDay, day);
+                    },
+                    onDaySelected: (selectedDay, focusedDay) {
+                      if (!selectedDay.isBefore(DateTime.now())) {
                         setState(() {
                           _selectedDay = selectedDay;
                         });
-                      },
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          '3',
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          ' Selecciona la hora que desea agendar \n su asesoria',
-                          style: TextStyle(fontSize: 17),
-                        )
-                      ],
-                    ),
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content:
+                                  Text('No puedes seleccionar un día pasado')),
+                        );
+                      }
+                    },
+                  ),
+                  if (_selectedDay != null)
                     ElevatedButton(
                       onPressed: () async {
                         final TimeOfDay? pickedTime = await showTimePicker(
@@ -677,30 +635,27 @@ class _PagCalendarioState extends State<PagCalendario> {
                           });
                         }
                       },
-                      child: Text('Seleccionar Hora'),
+                      child: Text(
+                        'Presione aquí para seleccionar la hora',
+                        textAlign: TextAlign.center,
+                      ),
+                      // Change the button style based on whether a time has been picked
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            _selectedTime != null ? Colors.blue : Colors.grey,
+                      ),
                     ),
-                  ],
-                ),
+                ],
               ),
-            ),
-            Divider(),
-            // Bottom section
-            Expanded(
-              flex: 2,
-              child: SingleChildScrollView(
-                child: Column(
+              Divider(),
+              // Bottom section
+              if (_selectedTime != null) // Check if a time is selected
+                Column(
                   children: <Widget>[
                     Row(
                       children: [
                         Text(
-                          '4',
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          ' Selecciona una de las 3 opciones\nde tiempo que necesita para su asesoria. \n Deslice para ver mas informacion',
+                          'Seleccione la duración de la reunión.',
                           style: TextStyle(fontSize: 17),
                         )
                       ],
@@ -712,24 +667,44 @@ class _PagCalendarioState extends State<PagCalendario> {
                           onPressed: () {
                             setState(() {
                               _duration = Duration(minutes: 15);
+                              _selectedDuration =
+                                  _duration; // Update the selected duration
                             });
                           },
+                          // Change color based on the selected duration
+                          style: ElevatedButton.styleFrom(
+                            primary: _selectedDuration == Duration(minutes: 15)
+                                ? Colors.blue // Selected color
+                                : Colors.grey, // Default color
+                          ),
                           child: Text('15 minutos'),
                         ),
                         ElevatedButton(
                           onPressed: () {
                             setState(() {
                               _duration = Duration(minutes: 30);
+                              _selectedDuration = _duration;
                             });
                           },
+                          style: ElevatedButton.styleFrom(
+                            primary: _selectedDuration == Duration(minutes: 30)
+                                ? Colors.blue // Selected color
+                                : Colors.grey, // Default color
+                          ),
                           child: Text('30 minutos'),
                         ),
                         ElevatedButton(
                           onPressed: () {
                             setState(() {
                               _duration = Duration(hours: 1);
+                              _selectedDuration = _duration;
                             });
                           },
+                          style: ElevatedButton.styleFrom(
+                            primary: _selectedDuration == Duration(hours: 1)
+                                ? Colors.blue // Selected color
+                                : Colors.grey, // Default color
+                          ),
                           child: Text('1 hora'),
                         ),
                       ],
@@ -742,144 +717,23 @@ class _PagCalendarioState extends State<PagCalendario> {
                     ),
                   ],
                 ),
-              ),
-            ),
-            Divider(),
-            // Button
-            ElevatedButton(
-              onPressed: () async {
-                if (_selectedDay == null ||
-                    _selectedTime == null ||
-                    _duration == null) {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text('Error'),
-                        content: Text('No hay día u hora seleccionada'),
-                        actions: <Widget>[
-                          TextButton(
-                            child: Text('OK'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                  return;
-                }
-                DateTime appointmentDateTime = DateTime(
-                  _selectedDay!.year,
-                  _selectedDay!.month,
-                  _selectedDay!.day,
-                  _selectedTime!.hour,
-                  _selectedTime!.minute,
-                );
-                final GoogleSignInAccount? googleUser =
-                    await googleSignIn.signIn();
-
-                if (googleUser != null) {
-                  final GoogleSignInAuthentication googleAuth =
-                      await googleUser.authentication;
-
-                  final http.Client httpClient = http.Client();
-                  final accessToken = googleAuth.accessToken;
-                  final idToken = googleAuth.idToken;
-                  final expiryTime = DateTime.now()
-                      .add(Duration(hours: 1))
-                      .toUtc(); // Set expiry time
-                  final scopes = <String>[
-                    'https://www.googleapis.com/auth/calendar'
-                  ]; // Set scopes
-                  final credentials = googleapis_auth.AccessCredentials(
-                    googleapis_auth.AccessToken(
-                        'Bearer', accessToken!, expiryTime),
-                    idToken,
-                    scopes,
-                  );
-                  final authenticatedClient = googleapis_auth
-                      .authenticatedClient(httpClient, credentials);
-
-                  final start = gcal.EventDateTime()
-                    ..dateTime = appointmentDateTime
-                    ..timeZone = 'America/Santiago';
-                  final end = gcal.EventDateTime()
-                    ..dateTime = appointmentDateTime.add(_duration!)
-                    ..timeZone = 'America/Santiago';
-                  final calendar = gcal.CalendarApi(authenticatedClient);
-                  final event = gcal.Event()
-                    ..summary =
-                        'Reunión con ${widget.nombre} ${widget.apellidos}'
-                    ..start = start
-                    ..end = end;
-
-                  final sameDocuments = await firestore
-                      .collection('reunion')
-                      .where('summary', isEqualTo: event.summary)
-                      .get();
-
-                  if (appointmentDateTime != null) {
-                    bool isOverlap = await isOverlapping(appointmentDateTime!,
-                        appointmentDateTime.add(_duration!));
-                    if (!isOverlap && (sameDocuments.size < 5)) {
-                      // Add the event to Firestore
-                      event.attendees = [
-                        gcal.EventAttendee(
-                            email: widget
-                                .correo), // Add the asesor's email as an attendee
-                      ];
-                      gcal.Event createdEvent =
-                          await calendar.events.insert(event, 'primary');
-
-                      // After successful insertion, add the event to Firestore
-                      await firestore.collection('reunion').add({
-                        'summary': createdEvent.summary,
-                        'start': event.start!.dateTime!.toIso8601String(),
-                        'end': event.end!.dateTime!.toIso8601String(),
-                        'email': currentUser?.email,
-                        'googleEventId': createdEvent
-                            .id, // Use the ID from the created event
-                        'asesorCorreo': widget.correo,
-                      });
-
-                      // Show a message that the event was created successfully
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('Raunión agendada'),
-                            content: Text('Hora reservada correctamente.'),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text('Continuar'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    } else {
-                      String errormsg;
-                      if (sameDocuments.size < 5) {
-                        errormsg =
-                            'Hora ya reservada o asesor no disponible en ese horario.';
-                      } else {
-                        errormsg = 'El asesor ya posee 5 horas agendadas.';
-                      }
-                      // Show a message that the event overlaps with an existing event
+              Divider(),
+              // Button
+              if (_selectedDuration != null)
+                ElevatedButton(
+                  onPressed: () async {
+                    if (_selectedDay == null ||
+                        _selectedTime == null ||
+                        _duration == null) {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: Text('Error'),
-                            content: Text(errormsg),
+                            content: Text('No hay día u hora seleccionada'),
                             actions: <Widget>[
                               TextButton(
-                                child: Text('Continuar'),
+                                child: Text('OK'),
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
@@ -888,13 +742,135 @@ class _PagCalendarioState extends State<PagCalendario> {
                           );
                         },
                       );
+                      return;
                     }
-                  }
-                }
-              },
-              child: Text('Agendar Hora'),
-            ),
-          ],
+                    DateTime appointmentDateTime = DateTime(
+                      _selectedDay!.year,
+                      _selectedDay!.month,
+                      _selectedDay!.day,
+                      _selectedTime!.hour,
+                      _selectedTime!.minute,
+                    );
+                    final GoogleSignInAccount? googleUser =
+                        await googleSignIn.signIn();
+
+                    if (googleUser != null) {
+                      final GoogleSignInAuthentication googleAuth =
+                          await googleUser.authentication;
+
+                      final http.Client httpClient = http.Client();
+                      final accessToken = googleAuth.accessToken;
+                      final idToken = googleAuth.idToken;
+                      final expiryTime = DateTime.now()
+                          .add(Duration(hours: 1))
+                          .toUtc(); // Set expiry time
+                      final scopes = <String>[
+                        'https://www.googleapis.com/auth/calendar'
+                      ]; // Set scopes
+                      final credentials = googleapis_auth.AccessCredentials(
+                        googleapis_auth.AccessToken(
+                            'Bearer', accessToken!, expiryTime),
+                        idToken,
+                        scopes,
+                      );
+                      final authenticatedClient = googleapis_auth
+                          .authenticatedClient(httpClient, credentials);
+
+                      final start = gcal.EventDateTime()
+                        ..dateTime = appointmentDateTime
+                        ..timeZone = 'America/Santiago';
+                      final end = gcal.EventDateTime()
+                        ..dateTime = appointmentDateTime.add(_duration!)
+                        ..timeZone = 'America/Santiago';
+                      final calendar = gcal.CalendarApi(authenticatedClient);
+                      final event = gcal.Event()
+                        ..summary =
+                            'Reunión con ${widget.nombre} ${widget.apellidos}'
+                        ..start = start
+                        ..end = end;
+
+                      final sameDocuments = await firestore
+                          .collection('reunion')
+                          .where('summary', isEqualTo: event.summary)
+                          .get();
+
+                      if (appointmentDateTime != null) {
+                        bool isOverlap = await isOverlapping(
+                            appointmentDateTime!,
+                            appointmentDateTime.add(_duration!));
+                        if (!isOverlap && (sameDocuments.size < 5)) {
+                          // Add the event to Firestore
+                          event.attendees = [
+                            gcal.EventAttendee(
+                                email: widget
+                                    .correo), // Add the asesor's email as an attendee
+                          ];
+                          gcal.Event createdEvent =
+                              await calendar.events.insert(event, 'primary');
+
+                          // After successful insertion, add the event to Firestore
+                          await firestore.collection('reunion').add({
+                            'summary': createdEvent.summary,
+                            'start': event.start!.dateTime!.toIso8601String(),
+                            'end': event.end!.dateTime!.toIso8601String(),
+                            'email': currentUser?.email,
+                            'googleEventId': createdEvent
+                                .id, // Use the ID from the created event
+                            'asesorCorreo': widget.correo,
+                          });
+
+                          // Show a message that the event was created successfully
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Raunión agendada'),
+                                content: Text('Hora reservada correctamente.'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text('Continuar'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        } else {
+                          String errormsg;
+                          if (sameDocuments.size < 5) {
+                            errormsg =
+                                'Hora ya reservada o asesor no disponible en ese horario.';
+                          } else {
+                            errormsg = 'El asesor ya posee 5 horas agendadas.';
+                          }
+                          // Show a message that the event overlaps with an existing event
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Error'),
+                                content: Text(errormsg),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text('Continuar'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                      }
+                    }
+                  },
+                  child: Text('Agendar Hora'),
+                ),
+            ],
+          ),
         ),
       ),
     );

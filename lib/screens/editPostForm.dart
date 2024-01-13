@@ -65,9 +65,9 @@ class _EditPostFormState extends State<EditPostForm> {
     return Scaffold(
       appBar: AppBar(
         title:
-            Text('Edita tu publicación', style: TextStyle(color: Colors.black)),
-        iconTheme: IconThemeData(color: Colors.black),
-        backgroundColor: Color.fromARGB(255, 235, 250, 151),
+            Text('Edita tu publicación', style: TextStyle(color: Colors.white)),
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Colors.deepPurple,
       ),
       body: Padding(
         padding: EdgeInsets.all(16),

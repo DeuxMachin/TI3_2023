@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'post.dart';
+import 'package:ti3/screens/post.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class PostList extends StatefulWidget {
+class PostListAdmin extends StatefulWidget {
   final List<Post> listItems;
-  PostList(this.listItems);
+  PostListAdmin(this.listItems);
 
   @override
-  State<PostList> createState() => _PostListState();
+  State<PostListAdmin> createState() => _PostListStateAdmin();
 }
 
-class _PostListState extends State<PostList> {
+class _PostListStateAdmin extends State<PostListAdmin> {
   void like(Function callBack) {
     this.setState(() {
       callBack();
@@ -61,7 +61,7 @@ class _PostListState extends State<PostList> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(10), // Adjust the padding as needed
+                  padding: EdgeInsets.all(10),
                   child: Text(post.body),
                 ),
                 Align(
@@ -123,6 +123,7 @@ class _forum2State extends State<forum2> {
       }).toList();
     });
   }
+
 // Función para editar comentarios
 
   Future<void> _sendComment() async {
@@ -148,7 +149,6 @@ class _forum2State extends State<forum2> {
     }
   }
 
-  @override
   void _showDeleteCommentDialog(BuildContext context, int commentIndex) {
     showDialog(
       context: context,
@@ -293,7 +293,7 @@ class _forum2State extends State<forum2> {
           Expanded(
             child: ListView(
               children: <Widget>[
-                PostList(this.posts),
+                PostListAdmin(this.posts),
                 StreamBuilder<List<Map<String, dynamic>>>(
                   stream: _commentsStream(),
                   builder: (context, snapshot) {
@@ -302,10 +302,10 @@ class _forum2State extends State<forum2> {
                     }
                     if (snapshot.hasError) {
                       return Center(
-                          child: Text("Error al cargar los comentarios."));
+                          child: Text("Error al cargar comentarios."));
                     }
                     if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Center(child: Text("Aun no hay comentarios."));
+                      return Center(child: Text("Aún no hay comentarios."));
                     }
                     var comments = snapshot.data!;
                     return ListView.builder(
@@ -366,30 +366,29 @@ class _forum2State extends State<forum2> {
                                         ],
                                       ),
                                     ),
-                                    if (isCommentOwner)
-                                      PopupMenuButton<String>(
-                                        onSelected: (String value) async {
-                                          if (value == 'Eliminar') {
-                                            _showDeleteCommentDialog(
-                                                context, index);
-                                          } else if (value == 'Editar') {
-                                            _showEditCommentDialog(
-                                                context, comments[index]);
-                                          }
-                                        },
-                                        itemBuilder: (BuildContext context) => [
-                                          PopupMenuItem<String>(
-                                            value: 'Editar',
-                                            child: Text('Editar'),
-                                          ),
-                                          PopupMenuItem<String>(
-                                            value: 'Eliminar',
-                                            child: Text('Eliminar',
-                                                style: TextStyle(
-                                                    color: Colors.red)),
-                                          ),
-                                        ],
-                                      ),
+                                    PopupMenuButton<String>(
+                                      onSelected: (String value) async {
+                                        if (value == 'Eliminar') {
+                                          _showDeleteCommentDialog(
+                                              context, index);
+                                        } else if (value == 'Editar') {
+                                          _showEditCommentDialog(
+                                              context, comments[index]);
+                                        }
+                                      },
+                                      itemBuilder: (BuildContext context) => [
+                                        PopupMenuItem<String>(
+                                          value: 'Editar',
+                                          child: Text('Editar'),
+                                        ),
+                                        PopupMenuItem<String>(
+                                          value: 'Eliminar',
+                                          child: Text('Eliminar',
+                                              style:
+                                                  TextStyle(color: Colors.red)),
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 ),
                                 SizedBox(height: 8),
@@ -405,35 +404,6 @@ class _forum2State extends State<forum2> {
                     );
                   },
                 )
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    controller: _commentController,
-                    decoration: InputDecoration(
-                      labelText: 'Escribe un comentario...',
-                      border: OutlineInputBorder(),
-                      fillColor: Colors.lightBlue[50],
-                      filled: true,
-                    ),
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: () async {
-                    await _sendComment();
-                    setState(() {
-                      _commentController.clear();
-                    });
-                  },
-                ),
               ],
             ),
           ),

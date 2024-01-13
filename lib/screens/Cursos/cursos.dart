@@ -15,17 +15,17 @@ class _CursospageState extends State<Cursospage> {
         {
           "name": "Definiendo",
           "url":
-              "https://dte.uct.cl/wp-content/uploads/2022/08/Definiendo-mi-mo%CC%81dulo-e-learning.docx"
+              "https://cinap.uct.cl/wp-content/uploads/2022/08/Definiendo-mi-módulo-e-learning.docx"
         },
         {
           "name": "Planificacion E-actividades",
           "url":
-              "https://dte.uct.cl/wp-content/uploads/2023/03/Planificacion-y-descripcion-de-e-actividades.docx"
+              "https://cinap.uct.cl/wp-content/uploads/2023/03/Planificacion-y-descripcion-de-e-actividades.docx"
         },
         {
           "name": "Fichas",
           "url":
-              "https://dte.uct.cl/wp-content/uploads/2022/08/Fichas-virtualizacio%CC%81n-2022.pdf"
+              "https://cinap.uct.cl/wp-content/uploads/2022/08/Fichas-virtualización-2022.pdf"
         },
       ],
     },
@@ -41,63 +41,39 @@ class _CursospageState extends State<Cursospage> {
       ],
     },
     {
-      "imagePath": "assets/e_actividades.png",
-      "title": "Ejemplos de actividades",
-      "urls": [
-        {
-          "name": "Acceso",
-          "url":
-              "https://dte.uct.cl/wp-content/uploads/2022/08/Definiendo-mi-mo%CC%81dulo-e-learning.docx"
-        },
-        {
-          "name": "Motivacion",
-          "url":
-              "https://dte.uct.cl/wp-content/uploads/2023/03/Planificacion-y-descripcion-de-e-actividades.docx"
-        },
-        {
-          "name": "Socializacion de informacion",
-          "url":
-              "https://dte.uct.cl/wp-content/uploads/2022/08/Fichas-virtualizacio%CC%81n-2022.pdf"
-        },
-        {
-          "name": "Intercambio de informacion",
-          "url":
-              "https://dte.uct.cl/wp-content/uploads/2022/08/Definiendo-mi-mo%CC%81dulo-e-learning.docx"
-        },
-        {
-          "name": "Construccion del conocimiento",
-          "url":
-              "https://dte.uct.cl/wp-content/uploads/2023/03/Planificacion-y-descripcion-de-e-actividades.docx"
-        },
-        {
-          "name": "Desarrollo",
-          "url":
-              "https://dte.uct.cl/wp-content/uploads/2022/08/Fichas-virtualizacio%CC%81n-2022.pdf"
-        },
-      ],
-    },
-    {
       "imagePath": "assets/ejemplo_red.png",
       "title": "Ejemplos de RED",
       "urls": [
-        {"name": "Infografias 1", "url": "https://dte.uct.cl/impulsatured/"},
-        {"name": "Infografias 2", "url": "https://dte.uct.cl/impulsatured/"},
-        {"name": "Infografias 3", "url": "https://dte.uct.cl/impulsatured/"},
+        {
+          "name": "Infografias 1",
+          "url":
+              "https://view.genial.ly/5ed92b2a352b1f0db1854636/presentation-infografia-01-que-son-los-hongos"
+        },
+        {
+          "name": "Infografias 2",
+          "url":
+              "https://view.genial.ly/6100290ad5b1780d16bc7f34/presentation-gestion-de-costos"
+        },
+        {
+          "name": "Infografias 3",
+          "url":
+              "https://view.genial.ly/6165d76cbfaba50d9c6229cb/presentation-peer-feedback"
+        },
         {
           "name": "Cápsula de  contenido 1",
-          "url": "https://dte.uct.cl/impulsatured/"
+          "url": "https://www.youtube.com/watch?v=XdjVxUutZ0U"
         },
         {
           "name": "Cápsula de  contenido 2",
-          "url": "https://dte.uct.cl/impulsatured/"
+          "url": "https://www.youtube.com/watch?v=VI2x_4JyxKM"
         },
         {
           "name": "Cápsula de  contenido 3",
-          "url": "https://dte.uct.cl/impulsatured/"
+          "url": "https://www.youtube.com/watch?v=qR5NajY-eWU"
         },
         {
           "name": "Podcast de contenido",
-          "url": "https://dte.uct.cl/impulsatured/"
+          "url": "https://cinap.uct.cl/educacionpodcast/"
         },
       ],
     },
@@ -108,17 +84,17 @@ class _CursospageState extends State<Cursospage> {
         {
           "name": "Guión video de contenido",
           "url":
-              "https://dte.uct.cl/wp-content/uploads/2022/08/Guio%CC%81n-grabacio%CC%81n-Video-versio%CC%81n.docx"
+              "https://cinap.uct.cl/wp-content/uploads/2022/08/Guión-grabación-Video-versión.docx"
         },
         {
           "name": "Guión podcast de contenido",
           "url":
-              "https://dte.uct.cl/wp-content/uploads/2022/08/Guio%CC%81n-capsula-de-audio.docx"
+              "https://cinap.uct.cl/wp-content/uploads/2022/08/Guión-capsula-de-audio.docx"
         },
         {
           "name": "Consideraciones para la grabación de forma autónoma",
           "url":
-              "https://dte.uct.cl/wp-content/uploads/2022/08/Consideraciones-para-la-grabacio%CC%81n-de-forma-auto%CC%81noma.pdf"
+              "https://cinap.uct.cl/wp-content/uploads/2022/08/Consideraciones-para-la-grabación-de-forma-autónoma.pdf"
         },
       ],
     },
@@ -161,7 +137,7 @@ class _CursospageState extends State<Cursospage> {
         {
           "name": "Crea el banner de curso",
           "url":
-              "https://dte.uct.cl/recursos-graficos/banner-de-curso-blackboard/"
+              "https://cinap.uct.cl/recursos-graficos/banner-de-curso-blackboard/"
         },
       ],
     },
@@ -172,37 +148,41 @@ class _CursospageState extends State<Cursospage> {
         {
           "name": "Seguimiento",
           "url":
-              "https://dte.uct.cl/wp-content/uploads/2022/08/Ficha-Tutoras-y-Tutores-E-learning.pdf"
+              "https://cinap.uct.cl/wp-content/uploads/2022/08/Ficha-Tutoras-y-Tutores-E-learning.pdf"
         },
       ],
     },
     // Agrega las rutas de tus imágenes y títulos aquí
   ];
+  // Constantes para estilos
+  static const TextStyle titleStyle =
+      TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
+  static const TextStyle linkStyle = TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+      color: Colors.blue,
+      decoration: TextDecoration.underline);
 
-  void launchURL(String url) async =>
-      await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
-
-  int? selectedCardIndex;
+  // Mapa para rastrear la expansión de los elementos
+  Map<int, bool> expandedItems = {};
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Virtualización", style: TextStyle(color: Colors.black)),
-        iconTheme: IconThemeData(color: Colors.black),
-        backgroundColor: Color.fromARGB(255, 235, 250, 151),
+        title: Text("Virtualización",
+            style: TextStyle(color: Colors.white, fontSize: 20)),
+        backgroundColor: Colors.deepPurple,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              Image.asset("assets/Virtualiza.png"),
-              Image.asset("assets/principios_orientadores.png"),
-              _crearCurso1(),
-              _crearListaDeImagenes(),
-            ],
-          ),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Column(
+          children: <Widget>[
+            Image.asset("assets/Virtualiza.png", fit: BoxFit.cover),
+            SizedBox(height: 20),
+            _crearCurso1(),
+            ..._crearListaDeImagenes(),
+          ],
         ),
       ),
     );
@@ -211,120 +191,183 @@ class _CursospageState extends State<Cursospage> {
   Widget _crearCurso1() {
     return Card(
       elevation: 5,
-      color: Colors.blue,
-      child: Container(
-        padding: EdgeInsets.all(30),
+      color: Colors.blue[100],
+      child: Padding(
+        padding: EdgeInsets.all(20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            Text('El objetivo de este curso',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
+            SizedBox(height: 10),
             Text(
-              'El objetivo de este curso.',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              'El e-learning está pensado para ejercer una acción formativa, basando el proceso de aprendizaje, en una interacción completamente sostenida en tecnología, sin necesidad del contacto físico del alumno con el profesor, ni tampoco la asistencia del alumno a una sala de clases.',
-              style: TextStyle(fontSize: 18),
-            )
+                'El e-learning está pensado para ejercer una acción formativa, basando el proceso de aprendizaje, en una interacción completamente sostenida en tecnología, sin necesidad del contacto físico del alumno con el profesor, ni tampoco la asistencia del alumno a una sala de clases.',
+                style: TextStyle(fontSize: 16, height: 1.5)),
           ],
         ),
       ),
     );
   }
 
-  Widget _crearListaDeImagenes() {
-    return SingleChildScrollView(
-      child: Column(
-        children: imageInfo.asMap().entries.map((entry) {
-          final index = entry.key;
-          final data = entry.value;
-          final isSelected = selectedCardIndex == index;
+  List<Widget> _crearListaDeImagenes() {
+    return imageInfo.asMap().entries.map((entry) {
+      int index = entry.key;
+      Map<String, dynamic?> data = entry.value;
 
-          return Container(
-            height: 200,
-            width: 380, // altura fija para todas las tarjetas
-            child: Card(
-              elevation: 5,
-              child: SingleChildScrollView(
-                // Añade SingleChildScrollView aquí
-                child: Column(
-                  children: <Widget>[
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          if (selectedCardIndex == index) {
-                            selectedCardIndex = null;
-                          } else {
-                            selectedCardIndex = index;
-                          }
-                        });
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(10.0),
-                        child: Image.asset(
-                          data["imagePath"] ?? "",
-                          width: 120,
-                          height: 80,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      data["title"] ?? "",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    if (isSelected) _buildLinkList(data),
-                  ],
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _buildTitle(index, data),
+          if (expandedItems[index] ?? false)
+            GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio:
+                    1.5, // Ajusta este valor según el tamaño deseado
+              ),
+              itemCount: (data["urls"] as List).length,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (BuildContext context, int linkIndex) {
+                final urlData = data["urls"][linkIndex];
+                return _buildLinkCard(urlData);
+              },
+            ),
+        ],
+      );
+    }).toList();
+  }
+
+  Widget _buildLinkCard(Map<String, dynamic> urlData) {
+    final url = urlData["url"];
+    final name = urlData["name"];
+    String imagePath = url.contains("youtu.be") || url.contains("youtube.com")
+        ? "assets/youtube.png"
+        : "assets/IconPDF.png";
+
+    return GestureDetector(
+      onTap: () {
+        launchURL(url);
+      },
+      child: Card(
+        elevation: 5,
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image.asset(
+                imagePath,
+                width: 100,
+                height: 60,
+                fit: BoxFit.contain,
+              ),
+              SizedBox(height: 8),
+              Flexible(
+                child: Text(
+                  name ?? "Enlace",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis, // Añadir puntos suspensivos
                 ),
               ),
-            ),
-          );
-        }).toList(),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildLinkList(Map<String, dynamic?> data) {
+  Widget _buildTitle(int index, Map<String, dynamic?> data) {
+    // Revisar si el ítem actual está expandido
+    bool isExpanded = expandedItems[index] ?? false;
+
+    return ListTile(
+      contentPadding: EdgeInsets.symmetric(vertical: 8.0),
+      leading: Icon(
+        isExpanded
+            ? Icons.arrow_downward
+            : Icons.arrow_forward, // Cambia la flecha según el estado
+        color: Colors.grey[600], // Puedes cambiar el color si es necesario
+      ),
+      title: Text(
+        data["title"] ?? "",
+        style: titleStyle,
+        textAlign: TextAlign.left,
+      ),
+      onTap: () {
+        setState(() {
+          // Cambia el estado de expandido o contraído
+          expandedItems[index] = !isExpanded;
+        });
+      },
+    );
+  }
+
+  List<Widget> _buildLinkList(Map<String, dynamic?> data) {
     final urls = data["urls"] as List<Map<String, dynamic>>?;
 
     if (urls != null && urls.isNotEmpty) {
-      return Column(
-        children: urls.map((urlData) {
-          final url = urlData["url"];
-          final name = urlData["name"];
+      return [
+        Wrap(
+          spacing: 8.0, // Espacio horizontal entre los widgets
+          runSpacing: 8.0, // Espacio vertical entre las filas
+          alignment: WrapAlignment.start, // Alinea los widgets al inicio
+          children: urls.map((urlData) {
+            final url = urlData["url"];
+            final name = urlData["name"];
+            String imagePath =
+                url.contains("youtu.be") || url.contains("youtube.com")
+                    ? "assets/youtube.png"
+                    : "assets/IconPDF.png";
 
-          return ListTile(
-            title: GestureDetector(
+            return GestureDetector(
               onTap: () {
                 launchURL(url);
               },
-              child: Text(
-                name ?? "Enlace",
-                style: TextStyle(
-                  color: Colors.blue, // Cambia el color del texto a azul
-                  decoration: TextDecoration.underline, // Subraya el texto
+              child: Card(
+                elevation: 3,
+                child: Padding(
+                  padding: EdgeInsets.all(4.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Image.asset(
+                        imagePath,
+                        width: 100, // Reducido de 100
+                        height: 60, // Reducido de 60
+                        fit: BoxFit.contain,
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        name ?? "Enlace",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold), // Reducido de 16
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        }).toList(),
-      );
+            );
+          }).toList(),
+        )
+      ];
     } else {
-      // Si no hay URLs, muestra un mensaje alternativo
-      return Container(
-        padding: EdgeInsets.all(8.0),
-        child: Text(
-          "No hay enlaces disponibles",
-          style: TextStyle(
-            color: Colors.grey, // Puedes ajustar el color del texto
-          ),
-        ),
-      );
+      return [
+        Text("No hay enlaces disponibles", style: TextStyle(color: Colors.grey))
+      ];
+    }
+  }
+
+  void launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
     }
   }
 }

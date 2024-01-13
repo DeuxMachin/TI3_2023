@@ -1,25 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'editPostForm.dart'; // Asegúrate de importar la página de edición correctamente
+import 'package:ti3/screens/editPostForm.dart'; // Asegúrate de importar la página de edición correctamente
 
-class UserPostsPage extends StatelessWidget {
+class UserPostsPageAdmin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-
-    if (user == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title:
-              Text('Mis Publicaciones', style: TextStyle(color: Colors.white)),
-          iconTheme: IconThemeData(color: Colors.white),
-          backgroundColor: Colors.deepPurple,
-        ),
-        body: Center(child: Text("No se ha encontrado un usuario autenticado")),
-      );
-    }
-
     void _showDeleteDialog(BuildContext context, String documentId) {
       showDialog(
         context: context,
@@ -52,14 +37,12 @@ class UserPostsPage extends StatelessWidget {
       );
     }
 
-    final Stream<QuerySnapshot> _userPostsStream = FirebaseFirestore.instance
-        .collection('posts')
-        .where('author', isEqualTo: user.displayName)
-        .snapshots();
+    final Stream<QuerySnapshot> _userPostsStream =
+        FirebaseFirestore.instance.collection('posts').snapshots();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mis Publicaciones', style: TextStyle(color: Colors.white)),
+        title: Text('Publicaciones', style: TextStyle(color: Colors.white)),
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Colors.deepPurple,
       ),
@@ -76,7 +59,7 @@ class UserPostsPage extends StatelessWidget {
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(
-                child: Text('No posee publicaciones',
+                child: Text('No hay publicaciones',
                     style: TextStyle(color: Colors.black)));
           }
 

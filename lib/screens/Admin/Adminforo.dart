@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ti3/screens/userPost.dart';
-import 'newPostForm.dart';
-import 'post.dart';
-import 'respuestaForo.dart';
+import 'package:ti3/screens/Admin/Adminuserpost.dart';
+import 'package:ti3/screens/post.dart';
+import 'package:ti3/screens/admin/Adminfororespuesta.dart';
 import 'package:ti3/main.dart';
-import 'package:ti3/screens/HomeSi.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
-class ForoPage extends StatefulWidget {
+class ForoPageAdmin extends StatefulWidget {
   @override
-  _ForoPageState createState() => _ForoPageState();
+  _ForoPageAdminState createState() => _ForoPageAdminState();
 }
 
-class _ForoPageState extends State<ForoPage> with RouteAware {
-  int currentIndex = 3;
-
+class _ForoPageAdminState extends State<ForoPageAdmin> with RouteAware {
   final Stream<QuerySnapshot> _postsStream =
       FirebaseFirestore.instance.collection('posts').snapshots();
   TextEditingController _searchController = TextEditingController();
@@ -27,19 +22,13 @@ class _ForoPageState extends State<ForoPage> with RouteAware {
   }
 
   @override
-  void didPopNext() {
-    super.didPopNext();
-    setState(() {
-      currentIndex = 3;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.white, // Change color here
+        ),
         backgroundColor: Colors.deepPurple,
-        automaticallyImplyLeading: false,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -48,7 +37,7 @@ class _ForoPageState extends State<ForoPage> with RouteAware {
               children: [
                 Text('Foro', style: TextStyle(color: Colors.white)),
                 Container(
-                  width: 300,
+                  width: 250,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30),
@@ -82,76 +71,15 @@ class _ForoPageState extends State<ForoPage> with RouteAware {
               child: PostList(_postsStream, searchTerm: _searchController.text))
         ],
       ),
-      floatingActionButton: buildSpeedDial(),
-      bottomNavigationBar: BottomNavigationBar(
-        showUnselectedLabels: true,
-        iconSize: 32,
-        selectedItemColor: Colors.purple,
-        selectedFontSize: 18,
-        unselectedItemColor: Colors.grey,
-        currentIndex: currentIndex, // Establece el índice actual
-        onTap: (index) {
-          // Verifica si el índice está dentro del rango válido
-          if (index >= 0 && index < pages.length) {
-            // Cambia de página al tocar un ícono en el BottomNavigationBar
-            setState(() {
-              currentIndex = index;
-            });
-
-            // Navega a la página correspondiente utilizando Navigator
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => pages[currentIndex]),
-            );
-          }
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => UserPostsPageAdmin()),
+          );
         },
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Agendar'),
-          BottomNavigationBarItem(icon: Icon(Icons.flutter_dash), label: 'Bot'),
-          BottomNavigationBarItem(icon: Icon(Icons.forum), label: 'Foro'),
-        ],
+        child: Icon(Icons.edit),
       ),
-    );
-  }
-
-  SpeedDial buildSpeedDial() {
-    return SpeedDial(
-      icon: Icons.menu,
-      activeIcon: Icons.close,
-      buttonSize: Size(56.0, 56.0),
-      visible: true,
-      curve: Curves.bounceIn,
-      overlayColor: Colors.black,
-      overlayOpacity: 0.5,
-      tooltip: 'Opciones',
-      heroTag: 'speed-dial-hero-tag',
-      backgroundColor: Color.fromRGBO(56, 84, 232, 1),
-      foregroundColor: Colors.white,
-      elevation: 8.0,
-      shape: CircleBorder(),
-      children: [
-        SpeedDialChild(
-          child: Icon(Icons.add),
-          backgroundColor: Colors.green,
-          label: 'Crear publicacion',
-          labelStyle: TextStyle(fontSize: 18.0),
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => NewPostForm()),
-          ),
-        ),
-        SpeedDialChild(
-          child: Icon(Icons.edit),
-          backgroundColor: Colors.blue,
-          label: 'Mis Publicaciones',
-          labelStyle: TextStyle(fontSize: 18.0),
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => UserPostsPage()),
-          ),
-        ),
-      ],
     );
   }
 }
@@ -174,7 +102,6 @@ class _PostListState extends State<PostList> {
     });
   }
 
-  @override
   String limitWords(String text, int wordLimit) {
     List<String> words = text.split(' ');
 

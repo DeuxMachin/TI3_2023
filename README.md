@@ -20,27 +20,27 @@ Consiste principalmente en el desarrollo de una aplicación móvil para el *Cent
 
 | Bienvenida para los usuarios que estén entrando | Menú de inicio para usuarios |
 |---|---|
-| [![Inicio.png](https://i.postimg.cc/0jBLHwVk/Inicio.png)](https://postimg.cc/302SkdMV)|[![Home.png](https://i.postimg.cc/ZRVkpg3y/Home.png)](https://postimg.cc/zbbP1xxJ)|
+| ![Texto Alternativo](https://www.dropbox.com/scl/fi/kp29vxzvddtf6m6ngacsa/Inicio.png?rlkey=3g684acayppdrds8vxxy2lrm6&dl=1) | ![Texto Alternativo](https://www.dropbox.com/scl/fi/gln8f9q7oy0w1ro700b80/Home.png?rlkey=oe1rcsgsfc2187ur7lke8lomo&dl=1) |
 
 | Zona de agendamiento, sin seleccionar "Asesor" | Asesor seleccionado al momento de agendar |
 |---|---|
-| [![Agendar.png](https://i.postimg.cc/tCgqSd4j/Agendar.png)](https://postimg.cc/8sqgs6vK) |[![Agendar2.png](https://i.postimg.cc/0QfvZrgj/Agendar2.png)](https://postimg.cc/TLpB3d3v) |
+| ![Texto Alternativo](https://www.dropbox.com/scl/fi/k4pjhg9eujndnh0ci1fl8/Agendar.png?rlkey=t5be5irarwcm7q1u7cwuuh94e&dl=1) | ![Texto Alternativo](https://www.dropbox.com/scl/fi/6rozce4q65e66pe9qc3tb/Agendar2.png?rlkey=gbccz8j5ozz1erplifkavotvr&dl=1) |
 
 | Selección de agendamiento | Disponibilidad para los asesores |
 |---|---|
-|[![Agendar3.png](https://i.postimg.cc/ncwH6sXQ/Agendar3.png)](https://postimg.cc/2VhRWSFz)| [![Agendar4.png](https://i.postimg.cc/SsqqWCvH/Agendar4.png)](https://postimg.cc/gwMfpXdK)|
+| ![Texto Alternativo](https://www.dropbox.com/scl/fi/01id70cc6z5qeksyqidqu/Agendar3.png?rlkey=91sy6iyqms2zuhlimbncczd9p&dl=1) | ![Texto Alternativo](https://www.dropbox.com/scl/fi/dqwa55t63qpg4s7veezjg/Agendar4.png?rlkey=cyepc3u20pii5mcg65k0i4nun&dl=1) |
 
 | ChatBot | Vista de foro |
 |---|---|
-| [![Bot.png](https://i.postimg.cc/SR1hF5xp/Bot.png)](https://postimg.cc/MfB419Bs) | [![Foro.png](https://i.postimg.cc/zGbJ5Jh2/Foro.png)](https://postimg.cc/xXQr3VtL) |
+| ![Texto Alternativo](https://www.dropbox.com/scl/fi/w3bfoofw3hhk13uas9u40/Bot.png?rlkey=6qmeq37x2b4i0lbqz7vdz3t2o&dl=1) | ![Texto Alternativo](https://www.dropbox.com/scl/fi/brmo0fpi5ykv8bezuidk0/Foro.png?rlkey=wulg02f8xo0vtx970lemiw6oo&dl=1) |
 
 | Vista al seleccionar opciones en el foro | Crear publicación |
 |---|---|
-|[![Foro1.png](https://i.postimg.cc/bw7qwKHy/Foro1.png)](https://postimg.cc/RWLkPpDy)| [![Foro2.png](https://i.postimg.cc/zGg16xm9/Foro2.png)](https://postimg.cc/68tSGLp0) |
+| ![Texto Alternativo](https://www.dropbox.com/scl/fi/087um83pkglnf4knbogpu/Foro1.png?rlkey=7e2p1bimunuvvwit0sshybjt7&dl=1) | ![Texto Alternativo](https://www.dropbox.com/scl/fi/n0p8fefixu77x1meaebut/Foro2.png?rlkey=aqj8k3hpufxqqj3on5iijbe1x&dl=1) |
 
 | Vista para editar o eliminar publicaciones | Vista foro respuestas |
 |---|---|
-| [![Foro3.png](https://i.postimg.cc/MHTCDDb3/Foro3.png)](https://postimg.cc/8J2XkLYL) |[![Foro4.png](https://i.postimg.cc/4dJkKZKg/Foro4.png)](https://postimg.cc/wtbbPCcf) |
+| ![Texto Alternativo](https://www.dropbox.com/scl/fi/jneugbjdo4iagh0qg3aa8/Foro3.png?rlkey=dxqrecnueekxs41ngde21bhxo&dl=1) | ![Texto Alternativo](https://www.dropbox.com/scl/fi/5k4e59emuo2d876wn5557/Foro4.png?rlkey=zik9jeu4t1hn84v02xn414eo8&dl=1) |
 
 ## Principales funcionalidades del proyecto.
 

@@ -33,15 +33,14 @@ class _MeetingsPageState extends State<MeetingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Reuniones', style: TextStyle(color: Colors.black)),
-        backgroundColor: Color.fromARGB(255, 235, 250, 151),
-        iconTheme: IconThemeData(color: Colors.black),
+        title: Text('Reuniones', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.deepPurple,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: ListView.builder(
         itemCount: meetings.length,
         itemBuilder: (context, index) {
           final meeting = meetings[index];
-          //Parse the date start and end times
           DateTime dateTimeStart = DateTime.parse(meeting['start']);
           String formattedDateStart =
               DateFormat('dd-MM-yyyy – HH:mm').format(dateTimeStart);
@@ -51,20 +50,26 @@ class _MeetingsPageState extends State<MeetingsPage> {
             title: Text(meeting['summary']),
             subtitle: Text('$formattedDateStart - $formattedDateEnd'),
             trailing: IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () async {
-                await deleteMeeting(meeting);
-                getMeetings(); // Reload meetings
-                // Show a message that the event was deleted successfully
+              icon: Icon(Icons.delete, color: Colors.red),
+              onPressed: () {
+                // Show confirmation dialog
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Reunión cancelada'),
-                      content: Text('Hora cancelada correctamente.'),
+                      title: Text('Confirmar eliminación'),
+                      content: Text(
+                          '¿Estás seguro de que quieres eliminar esta reunión?'),
                       actions: <Widget>[
                         TextButton(
-                          child: Text('Continuar'),
+                          child: Text('Cancelar'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: Text('Eliminar',
+                              style: TextStyle(color: Colors.red)),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
@@ -72,7 +77,30 @@ class _MeetingsPageState extends State<MeetingsPage> {
                       ],
                     );
                   },
-                );
+                ).then((_) async {
+                  // This block runs after the confirmation dialog is dismissed
+                  await deleteMeeting(meeting);
+                  getMeetings(); // Reload meetings
+
+                  // Show success message dialog
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Reunión cancelada'),
+                        content: Text('Hora cancelada correctamente.'),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text('Continuar'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                });
               },
             ),
           );

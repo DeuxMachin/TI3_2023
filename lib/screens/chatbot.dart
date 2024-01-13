@@ -34,9 +34,9 @@ class _ChatPageState extends State<ChatPage> with RouteAware {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false, //Remove back arrow
-        title: Text("ChatBOT CEDID", style: TextStyle(color: Colors.black)),
-        iconTheme: IconThemeData(color: Colors.black),
-        backgroundColor: Color.fromARGB(255, 235, 250, 151),
+        title: Text("ChatBOT CEDID", style: TextStyle(color: Colors.white)),
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Colors.deepPurple,
       ),
       body: Column(
         children: [
@@ -211,7 +211,6 @@ class _ChatPageState extends State<ChatPage> with RouteAware {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Agendar'),
           BottomNavigationBarItem(icon: Icon(Icons.flutter_dash), label: 'Bot'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Cuenta'),
           BottomNavigationBarItem(icon: Icon(Icons.forum), label: 'Foro'),
         ],
       ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HyFlex extends StatelessWidget {
-// Creamos una lista para almacenar las imagenes , titulo , url para cada card
   final List<Map<String, String?>> imageInfo = [
     {
       "imagePath": "assets/IconPDF.png",
@@ -15,7 +14,7 @@ class HyFlex extends StatelessWidget {
       "imagePath": "assets/IconPDF.png",
       "title": "Estrategias para el docente",
       "url":
-          "https://dte.uct.cl/wp-content/uploads/2021/10/ESTRATEGIAS-INTERACCIO%CC%81N-DOCENTE-ESTUDIANTE.pdf"
+          "https://dte.uct.cl/wp-content/uploads/2021/10/ESTRATEGIAS-INTERACCIÓN-DOCENTE-ESTUDIANTE.pdf"
     },
     {
       "imagePath": "assets/IconPDF.png",
@@ -34,8 +33,6 @@ class HyFlex extends StatelessWidget {
           "https://dte.uct.cl/wp-content/uploads/2023/01/Manual-Salas-Hibridas.pdf"
     },
   ];
-
-  // Creamos una lista para almacenar las imagenes , titulo , url para cada card
 
   final List<Map<String, String?>> imageInfo2 = [
     {
@@ -60,11 +57,9 @@ class HyFlex extends StatelessWidget {
       "imagePath": "assets/IconPDF.png",
       "title": "Despues de la clase",
       "url":
-          "https://dte.uct.cl/wp-content/uploads/2021/10/DESPUE%CC%81S-DE-LA-CLASE-RECOMENDACIONES-ESTUDIANTES.pdf"
+          "https://dte.uct.cl/wp-content/uploads/2021/10/DESPUÉS-DE-LA-CLASE-RECOMENDACIONES-ESTUDIANTES.pdf"
     },
   ];
-
-  //Creamos un lanzamiento para las conexiones a las url
 
   void launchURL(String url) async =>
       await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
@@ -73,25 +68,26 @@ class HyFlex extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Hyflex", style: TextStyle(color: Colors.black)),
-        iconTheme: IconThemeData(color: Colors.black),
-        backgroundColor: Color.fromARGB(255, 235, 250, 151),
+        title:
+            Text("HyFlex", style: TextStyle(color: Colors.white, fontSize: 20)),
+        backgroundColor: Colors.deepPurple,
       ),
       body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Column(
           children: <Widget>[
-            Image.asset("assets/Hyflex.png"),
-            Image.asset("assets/principios.png"),
+            Image.asset("assets/Hyflex.png", fit: BoxFit.cover),
+            Image.asset("assets/principios_orientadores.png",
+                fit: BoxFit.cover),
+            SizedBox(height: 20),
             _crearCurso1(),
-            Text(
-              'Cursos disponibles para el docente',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
+            SizedBox(height: 20),
+            Text('Cursos disponibles para el docente',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             _crearListaDeImagenes(),
-            Text(
-              'Cursos disponibles para el Estudiante',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
+            SizedBox(height: 20),
+            Text('Cursos disponibles para el estudiante',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             _crearListaDeImagenes2(),
           ],
         ),
@@ -102,22 +98,18 @@ class HyFlex extends StatelessWidget {
   Widget _crearCurso1() {
     return Card(
       elevation: 5,
-      color: Colors.blue,
-      child: Container(
-        padding: EdgeInsets.all(30),
+      color: Colors.blue[100],
+      child: Padding(
+        padding: EdgeInsets.all(20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            Text('El objetivo de este curso',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
+            SizedBox(height: 10),
             Text(
-              'El objetivo de este curso.',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              "HyFlex es una modalidad de enseñanza y aprendizaje que se enmarca dentro de lo que se conoce como modelo Mixto, Híbrido o B-learning. Es Híbrido, porque integra las modalidades: presencial, online y flexible, porque los estudiantes tienen la posibilidad de participar en forma presencial o a distancia.",
-              style: TextStyle(fontSize: 18),
-            )
+                "HyFlex es una modalidad de enseñanza y aprendizaje que se enmarca dentro de lo que se conoce como modelo Mixto, Híbrido o B-learning. Es Híbrido, porque integra las modalidades: presencial, online y flexible, porque los estudiantes tienen la posibilidad de participar en forma presencial o a distancia.",
+                style: TextStyle(fontSize: 16, height: 1.5)),
           ],
         ),
       ),
@@ -125,87 +117,46 @@ class HyFlex extends StatelessWidget {
   }
 
   Widget _crearListaDeImagenes() {
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-      ),
-      itemCount: imageInfo.length,
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(), // Deshabilita el desplazamiento
-      itemBuilder: (BuildContext context, int index) {
-        return GestureDetector(
-          onTap: () {
-            launchURL(imageInfo[index]["url"] ?? "");
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Card(
-              elevation: 10,
-              child: Container(
-                padding: EdgeInsets.all(5.0),
-                child: Column(
-                  children: <Widget>[
-                    Image.asset(
-                      imageInfo[index]["imagePath"] ?? "",
-                      width: 120,
-                      height: 80,
-                      fit: BoxFit.contain,
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      imageInfo[index]["title"] ?? "",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
+    return _crearGrid(imageInfo);
   }
 
   Widget _crearListaDeImagenes2() {
+    return _crearGrid(imageInfo2);
+  }
+
+  Widget _crearGrid(List<Map<String, String?>> imageList) {
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
       ),
-      itemCount: imageInfo2.length,
+      itemCount: imageList.length,
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(), // Deshabilita el desplazamiento
+      physics: NeverScrollableScrollPhysics(),
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
-          onTap: () {
-            launchURL(imageInfo2[index]["url"] ?? "");
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Card(
-              elevation: 10,
-              child: Container(
-                padding: EdgeInsets.all(5.0),
-                child: Column(
-                  children: <Widget>[
-                    Image.asset(
-                      imageInfo2[index]["imagePath"] ?? "",
-                      width: 120,
-                      height: 80,
-                      fit: BoxFit.contain,
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      imageInfo2[index]["title"] ?? "",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+          onTap: () => launchURL(imageList[index]["url"] ?? ""),
+          child: Card(
+            elevation: 5,
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Image.asset(
+                    imageList[index]["imagePath"] ?? "",
+                    width: 100,
+                    height: 60,
+                    fit: BoxFit.contain,
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    imageList[index]["title"] ?? "",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             ),
           ),

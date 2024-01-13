@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:ti3/screens/Admin/Adminforo.dart';
 import 'package:ti3/screens/home.dart';
 import 'package:ti3/screens/agendar.dart';
-import 'package:ti3/screens/login.dart';
 import 'package:ti3/screens/chatbot.dart';
-import 'package:ti3/screens/perfil.dart';
 import 'package:ti3/screens/foro.dart';
-import 'package:ti3/screens/cursos.dart';
 import 'package:ti3/screens/showmeetings.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:ti3/screens/Admin/Adminmenu.dart';
+import 'package:ti3/screens/Admin/Adminshowmeetings.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
@@ -38,12 +38,12 @@ class MyApp extends StatelessWidget {
               correo: '',
               dates: '',
             ),
-        '/login': (context) => LoginScreen(),
         '/ChatBot': (context) => ChatPage(),
-        '/Perfil': (context) => PerfilPage(),
         '/Foro': (context) => ForoPage(),
-        '/Cursos': (context) => Cursospage(),
         '/Reuniones': (context) => MeetingsPage(),
+        '/AdminMenu': (context) => AdminMenuPage(),
+        '/ReunionesAdmin': (context) => AdminMeetingsPage(),
+        '/ForoAdmin': (context) => ForoPageAdmin(),
       },
     );
   }
